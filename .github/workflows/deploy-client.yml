@@ -1,0 +1,83 @@
+name: Deploy Client App
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        default: "prod"
+        type: choice
+        options:
+          - prod
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy Client App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: services/client-app/package-lock.json
+
+      - name: Install dependencies
+        working-directory: services/client-app
+        run: npm ci
+
+      - name: Build application
+        working-directory: services/client-app
+        run: npm run build
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Get Compute Engine IP
+        id: get-ip
+        run: |
+          # Get the IP address of the client-app instance
+          IP=$(gcloud compute instances describe client-app-instance --zone=europe-central2-a --format='get(networkInterfaces[0].accessConfigs[0].natIP)')
+          echo "INSTANCE_IP=$IP" >> $GITHUB_ENV
+
+      - name: Create SSH key
+        run: |
+          echo "${{ secrets.GCP_SSH_PRIVATE_KEY }}" > /tmp/ssh_key
+          chmod 600 /tmp/ssh_key
+
+      - name: Deploy to Compute Engine
+        run: |
+          # Create a tarball of the build
+          cd services/client-app/dist
+          tar -czf ../../../client-app-build.tar.gz .
+
+          # Copy the build to the instance
+          scp -i /tmp/ssh_key -o StrictHostKeyChecking=no ../../../client-app-build.tar.gz ${{ secrets.GCP_SSH_USER }}@${{ env.INSTANCE_IP }}:/tmp/
+
+          # SSH into the instance and deploy the build
+          ssh -i /tmp/ssh_key -o StrictHostKeyChecking=no ${{ secrets.GCP_SSH_USER }}@${{ env.INSTANCE_IP }} << 'EOF'
+            # Extract the build to the web root
+            sudo rm -rf /var/www/html/*
+            sudo tar -xzf /tmp/client-app-build.tar.gz -C /var/www/html/
+            sudo chown -R www-data:www-data /var/www/html
+            sudo chmod -R 755 /var/www/html
+
+            # Clean up
+            rm /tmp/client-app-build.tar.gz
+
+            # Restart nginx
+            sudo systemctl restart nginx
+          EOF
+
+      - name: Deployment Summary
+        run: |
+          echo "✅ Client app successfully deployed to http://${{ env.INSTANCE_IP }}/"
