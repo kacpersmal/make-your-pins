@@ -1,4 +1,4 @@
-name: Deploy Client App
+name: ⚛ Deploy Client App
 
 on:
   workflow_dispatch:
