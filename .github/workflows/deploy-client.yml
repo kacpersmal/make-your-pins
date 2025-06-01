@@ -128,11 +128,22 @@ jobs:
     name: 📢 Notify
     needs: deploy
     runs-on: ubuntu-latest
+    if: always()
     steps:
-      - name: Send Discord notification
+      - name: Send Success Discord notification
         uses: sarisia/actions-status-discord@v1
+        if: ${{ !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          title: "Deployment Completed"
-          description: "Client app has been successfully deployed by ${{ github.actor }}"
-          color: 0x57F287
+          title: "✅ Deployment Completed"
+          description: "Client app has been successfully deployed"
+          color: 0x57F287 # Green
+
+      - name: Send Failure Discord notification
+        uses: sarisia/actions-status-discord@v1
+        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: "❌ Deployment Failed"
+          description: "There was a problem deploying the client app"
+          color: 0xED4245 # Red
