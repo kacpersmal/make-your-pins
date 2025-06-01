@@ -18,7 +18,7 @@ resource "google_storage_bucket" "static_assets" {
   # Lifecycle rules
   lifecycle_rule {
     condition {
-      age = 90  # days
+      age = 365  # days - keep images for 1 year
     }
     action {
       type = "Delete"
