@@ -25,6 +25,7 @@ functions.cloudEvent(
   'processUploadedFile',
   async (cloudEvent: CloudEvent<StorageObjectData>) => {
     try {
+      console.log('IT WORKS');
       // Log event information
       console.log('Event ID:', cloudEvent.id);
       console.log('Event Type:', cloudEvent.type);
