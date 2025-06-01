@@ -3,6 +3,8 @@
 
 # Ignore variables files
 *.auto.tfvars
+*.tfvars
+
 
 # Ignore override files
 *.tfoverride
