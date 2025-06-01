@@ -1,0 +1,26 @@
+{
+  "name": "file-processor-function",
+  "version": "1.0.0",
+  "description": "Cloud Function to process uploaded files",
+  "main": "index.js",
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "devDependencies": {
+    "gts": "^5.3.1",
+    "typescript": "^5.4.3",
+    "@types/node": "20.12.7"
+  },
+  "scripts": {
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "prepare": "npm.cmd run compile",
+    "pretest": "npm.cmd run compile",
+    "posttest": "npm.cmd run lint"
+  }
+}

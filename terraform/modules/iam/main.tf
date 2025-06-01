@@ -11,5 +11,3 @@ resource "google_project_iam_member" "storage_object_viewer" {
   role    = "roles/storage.objectViewer"
   member  = "serviceAccount:${google_service_account.client_app.email}"
 }
-
-# Additional IAM permissions can be added as needed

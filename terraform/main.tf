@@ -62,3 +62,16 @@ module "iam" {
 
   depends_on = [google_project_service.services]
 }
+
+# Cloud Functions
+module "functions" {
+  source     = "./modules/functions"
+  project_id = var.project_id
+  region     = var.region
+  static_assets_bucket = module.storage.static_assets_bucket
+
+  depends_on = [
+    google_project_service.services,
+    module.storage
+  ]
+}
