@@ -51,6 +51,9 @@ function App() {
                       Sign up
                     </button>
                   </p>
+                  <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                    Auth Domain: {import.meta.env.VITE_FIREBASE_AUTH_DOMAIN}
+                  </p>
                 </>
               )}
             </>
