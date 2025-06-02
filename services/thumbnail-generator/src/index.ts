@@ -1,5 +1,27 @@
 import * as functions from '@google-cloud/functions-framework';
 import {CloudEvent} from '@google-cloud/functions-framework';
+import {Firestore} from '@google-cloud/firestore';
+
+const firestore = new Firestore();
+async function testFirestoreConnection() {
+  try {
+    // Create a test collection
+    const testCollection = firestore.collection('connection_tests');
+
+    // Create a test document
+    const docRef = await testCollection.add({
+      timestamp: new Date(),
+      message: 'Firestore connection test',
+      source: 'thumbnail-generator',
+    });
+
+    console.log('Successfully wrote to Firestore with document ID:', docRef.id);
+    return true;
+  } catch (error) {
+    console.error('Firestore connection test failed:', error);
+    throw error;
+  }
+}
 
 // Define interface for file object in Cloud Storage events
 interface StorageObjectData {
@@ -29,7 +51,7 @@ functions.cloudEvent(
       // Log event information
       console.log('Event ID:', cloudEvent.id);
       console.log('Event Type:', cloudEvent.type);
-
+      await testFirestoreConnection();
       // Get file information from the event
       const file = cloudEvent.data;
       if (!file) {

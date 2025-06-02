@@ -1,6 +1,27 @@
 import fastify from 'fastify';
 import cors from '@fastify/cors';
+import {Firestore} from '@google-cloud/firestore';
 
+const firestore = new Firestore();
+async function testFirestoreConnection() {
+  try {
+    // Create a test collection
+    const testCollection = firestore.collection('connection_tests');
+
+    // Create a test document
+    const docRef = await testCollection.add({
+      timestamp: new Date(),
+      message: 'Firestore connection test',
+      source: 'pins-api',
+    });
+
+    console.log('Successfully wrote to Firestore with document ID:', docRef.id);
+    return true;
+  } catch (error) {
+    console.error('Firestore connection test failed:', error);
+    throw error;
+  }
+}
 console.log('Starting Fastify server...');
 
 const server = fastify({
@@ -17,6 +38,7 @@ server.get('/health', async () => {
 });
 
 server.get('/ping', async (request, reply) => {
+  await testFirestoreConnection();
   return 'pong 2\n';
 });
 

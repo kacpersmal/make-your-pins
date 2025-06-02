@@ -22,3 +22,13 @@ output "pins_api_url" {
   description = "The URL of the Pins API service"
   value       = module.cloudrun.service_url
 }
+
+output "firestore_database_id" {
+  description = "The ID of the Firestore database"
+  value       = module.firebase.firestore_database_id
+}
+
+output "firebase_setup_instructions" {
+  description = "Instructions for completing Firebase setup"
+  value       = "See firebase_setup_instructions.md in the modules/firebase directory"
+}

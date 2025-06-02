@@ -89,3 +89,14 @@ module "cloudrun" {
     google_project_service.services
   ]
 }
+
+module "firebase" {
+  source     = "./modules/firebase"
+  project_id = var.project_id
+  region     = var.region
+
+  # Customize authentication providers as needed
+  auth_providers = ["google.com", "password"]
+
+  depends_on = [google_project_service.services]
+}

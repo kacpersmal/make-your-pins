@@ -4,15 +4,16 @@
   "description": "Cloud Function to process uploaded files",
   "main": "src/index.js",
   "dependencies": {
+    "@google-cloud/firestore": "^7.11.1",
     "@google-cloud/functions-framework": "^3.1.0"
   },
   "engines": {
     "node": ">=20.0.0"
   },
   "devDependencies": {
+    "@types/node": "20.12.7",
     "gts": "^5.3.1",
-    "typescript": "^5.4.3",
-    "@types/node": "20.12.7"
+    "typescript": "^5.4.3"
   },
   "scripts": {
     "lint": "gts lint",
