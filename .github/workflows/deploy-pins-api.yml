@@ -75,6 +75,7 @@ jobs:
 
           # Push both tags
           docker push ${REPO_PATH}/pins-api:${{ github.sha }}
+          docker push ${REPO_PATH}/pins-api:latest
 
           # Save the image name as an output (this is correct)
           echo "image_name=${REPO_PATH}/pins-api:${{ github.sha }}" >> $GITHUB_OUTPUT
