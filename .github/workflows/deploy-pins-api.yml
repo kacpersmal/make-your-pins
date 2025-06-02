@@ -87,7 +87,7 @@ jobs:
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy pins-api \
-            --image=${{ env.IMAGE_NAME }} \
+            --image=pins-api:latest \
             --region=europe-central2 \
             --platform=managed \
             --allow-unauthenticated \
