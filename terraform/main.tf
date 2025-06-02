@@ -13,6 +13,7 @@ resource "google_project_service" "services" {
     "firebase.googleapis.com",     # Firebase
     "firestore.googleapis.com",    # Firestore
     "run.googleapis.com",          # Cloud Run
+    "artifactregistry.googleapis.com", # Artifact Registry
   ])
 
   project = var.project_id
@@ -73,5 +74,18 @@ module "functions" {
   depends_on = [
     google_project_service.services,
     module.storage
+  ]
+}
+
+module "cloudrun" {
+  source     = "./modules/cloudrun"
+  project_id = var.project_id
+  region     = var.region
+
+  # The container image will be updated by the CI/CD pipeline
+  container_image = "europe-central2-docker.pkg.dev/${var.project_id}/make-your-pins/pins-api:latest"
+
+  depends_on = [
+    google_project_service.services
   ]
 }

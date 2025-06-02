@@ -17,3 +17,8 @@ output "cloud_function_url" {
   description = "The URL of the deployed Cloud Function"
   value       = module.functions.function_url
 }
+
+output "pins_api_url" {
+  description = "The URL of the Pins API service"
+  value       = module.cloudrun.service_url
+}
