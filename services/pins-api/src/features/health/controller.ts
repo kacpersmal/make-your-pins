@@ -1,4 +1,3 @@
-import {FastifyRequest, FastifyReply} from 'fastify';
 import {DefaultFirestoreService} from '../../shared/services';
 
 export async function healthCheck() {
