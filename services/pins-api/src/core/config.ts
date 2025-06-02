@@ -8,4 +8,8 @@ export const config = {
     origin: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   },
+  storage: {
+    bucketName: process.env.GCS_BUCKET_NAME || 'your-default-bucket-name',
+    urlExpirySeconds: parseInt(process.env.GCS_URL_EXPIRY_SECONDS || '900'), // 15 minutes
+  },
 };

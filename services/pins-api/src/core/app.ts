@@ -4,6 +4,7 @@ import {config} from './config';
 
 import {healthRoutes} from '../features/health';
 import authPlugin from '../shared/plugins/firebase-auth.plugin';
+import {storageRoutes} from '../features/storage';
 
 export function buildApp(): FastifyInstance {
   const server = fastify({
@@ -16,6 +17,7 @@ export function buildApp(): FastifyInstance {
 
   // Register routes
   void server.register(healthRoutes);
+  void server.register(storageRoutes, {prefix: '/storage'});
 
   return server;
 }
