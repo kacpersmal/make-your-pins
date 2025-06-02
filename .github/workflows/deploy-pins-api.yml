@@ -75,9 +75,8 @@ jobs:
 
           # Push both tags
           docker push ${REPO_PATH}/pins-api:${{ github.sha }}
-          docker push ${REPO_PATH}/pins-api:latest
 
-          # Save the image name as an output
+          # Save the image name as an output (this is correct)
           echo "image_name=${REPO_PATH}/pins-api:${{ github.sha }}" >> $GITHUB_OUTPUT
 
   deploy:
@@ -97,8 +96,19 @@ jobs:
 
       - name: Deploy to Cloud Run
         run: |
+          # Debug the image name
+          echo "Image name from build job: '${{ needs.build.outputs.image_name }}'"
+
+          # Set a default image if the output is empty
+          IMAGE="${{ needs.build.outputs.image_name }}"
+          if [ -z "$IMAGE" ]; then
+            echo "WARNING: Image name is empty, using default image"
+            IMAGE="europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/make-your-pins/pins-api:latest"
+          fi
+
+          # Deploy with the image
           gcloud run deploy pins-api \
-            --image=${{ needs.build.outputs.image_name }} \
+            --image="$IMAGE" \
             --region=europe-central2 \
             --platform=managed \
             --allow-unauthenticated \
