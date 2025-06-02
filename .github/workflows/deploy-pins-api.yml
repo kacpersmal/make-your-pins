@@ -91,7 +91,7 @@ jobs:
             --region=europe-central2 \
             --platform=managed \
             --allow-unauthenticated \
-            --memory=256Mi \
+            --memory=512Mi \
             --cpu=1 \
             --concurrency=80 \
             --max-instances=2 \
