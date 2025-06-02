@@ -105,18 +105,22 @@ jobs:
 
       - name: Deploy Cloud Function
         run: |
+          # Debug information
+          echo "Checking deployment files..."
+          ls -la function-source/
+
+          # Deploy using the directory path instead of the zip file
           gcloud functions deploy process-uploaded-file \
             --gen2 \
             --region=europe-central2 \
             --runtime=nodejs20 \
-            --source=function-source.zip \
+            --source=function-source \
             --entry-point=processUploadedFile \
             --memory=256MB \
             --trigger-event=google.cloud.storage.object.v1.finalized \
             --trigger-resource=${{ secrets.GCP_STORAGE_BUCKET }} \
             --service-account=${{ secrets.GCP_FUNCTION_SA }} \
             --timeout=60s
-
   notify:
     name: 📢 Notify
     needs: deploy
