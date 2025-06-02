@@ -3,6 +3,7 @@ import cors from '@fastify/cors';
 import {config} from './config';
 
 import {healthRoutes} from '../features/health';
+import authPlugin from '../shared/plugins/firebase-auth.plugin';
 
 export function buildApp(): FastifyInstance {
   const server = fastify({
@@ -11,6 +12,7 @@ export function buildApp(): FastifyInstance {
 
   // Register plugins
   void server.register(cors, config.cors);
+  void server.register(authPlugin);
 
   // Register routes
   void server.register(healthRoutes);

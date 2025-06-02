@@ -1,1 +1,1 @@
-type FirestoreStatus = 'healthy' | 'unhealthy';
+export type FirestoreStatus = 'healthy' | 'unhealthy';

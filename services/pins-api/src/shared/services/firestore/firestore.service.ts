@@ -1,4 +1,5 @@
 import {Firestore} from '@google-cloud/firestore';
+import {FirestoreStatus} from './firestore.service.dto';
 
 export interface FirestoreService {
   getClient(): Firestore;
