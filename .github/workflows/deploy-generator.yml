@@ -109,7 +109,11 @@ jobs:
           echo "Checking deployment files..."
           ls -la function-source/
 
-          # Deploy using the directory path instead of the zip file
+          # Show the src directory
+          echo "Source directory contents:"
+          ls -la function-source/src/ || echo "No src directory found"
+
+          # Deploy with correct entry point path
           gcloud functions deploy process-uploaded-file \
             --gen2 \
             --region=europe-central2 \
