@@ -1,0 +1,127 @@
+name: 🚀 Deploy Pins API
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        default: "prod"
+        type: choice
+        options:
+          - prod
+
+jobs:
+  build:
+    name: 🔨 Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: services/pins-api/package-lock.json
+
+      - name: Install dependencies
+        working-directory: services/pins-api
+        run: npm ci
+
+      - name: Build application
+        working-directory: services/pins-api
+        run: npm run compile
+
+      - name: Setup Google Cloud SDK
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Configure Docker for GCP Artifact Registry
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Authorize Docker push to Artifact Registry
+        run: gcloud auth configure-docker europe-central2-docker.pkg.dev
+
+      - name: Build and push Docker image
+        working-directory: services/pins-api
+        run: |
+          # Create a Dockerfile if it doesn't exist
+          cat > Dockerfile << EOF
+          FROM node:20-alpine
+          WORKDIR /app
+          COPY package*.json ./
+          COPY build ./build
+          RUN npm ci --omit=dev
+          EXPOSE 8080
+          CMD ["node", "build/src/index.js"]
+          EOF
+
+          # Build and push the Docker image
+          IMAGE_NAME="europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/make-your-pins/pins-api:${{ github.sha }}"
+          docker build -t $IMAGE_NAME .
+          docker push $IMAGE_NAME
+
+          # Save the image name for later use
+          echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+
+  deploy:
+    name: 🚀 Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy pins-api \
+            --image=${{ env.IMAGE_NAME }} \
+            --region=europe-central2 \
+            --platform=managed \
+            --allow-unauthenticated \
+            --memory=256Mi \
+            --cpu=1 \
+            --concurrency=80 \
+            --max-instances=2 \
+            --min-instances=0 \
+            --set-env-vars="NODE_ENV=production"
+
+          # Get the deployed URL
+          URL=$(gcloud run services describe pins-api --region=europe-central2 --format='value(status.url)')
+          echo "DEPLOYED_URL=$URL" >> $GITHUB_ENV
+
+  notify:
+    name: 📢 Notify
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Send Success Discord notification
+        uses: sarisia/actions-status-discord@v1
+        if: ${{ !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: "✅ API Deployment Completed"
+          description: "Pins API has been successfully deployed to Cloud Run at ${{ env.DEPLOYED_URL }}"
+          color: 0x57F287 # Green
+
+      - name: Send Failure Discord notification
+        uses: sarisia/actions-status-discord@v1
+        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: "❌ API Deployment Failed"
+          description: "There was a problem deploying the Pins API to Cloud Run"
+          color: 0xED4245 # Red
