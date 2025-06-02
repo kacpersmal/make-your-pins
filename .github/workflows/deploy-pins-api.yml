@@ -51,9 +51,9 @@ jobs:
 
       - name: Build and push Docker image
         working-directory: services/pins-api
-        id: save_image_name # Add an ID to reference this step
+        id: save_image_name
         run: |
-          # Create a Dockerfile if it doesn't exist
+          # Create Dockerfile
           cat > Dockerfile << EOF
           FROM node:20-alpine
           WORKDIR /app
@@ -64,13 +64,21 @@ jobs:
           CMD ["node", "build/src/index.js"]
           EOF
 
-          # Build and push the Docker image
-          IMAGE_NAME="europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/make-your-pins/pins-api:${{ github.sha }}"
-          docker build -t $IMAGE_NAME .
-          docker push $IMAGE_NAME
+          # Set repository path
+          REPO_PATH="europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/make-your-pins"
+
+          # Build the Docker image
+          docker build -t ${REPO_PATH}/pins-api:${{ github.sha }} .
+
+          # Also tag as latest
+          docker tag ${REPO_PATH}/pins-api:${{ github.sha }} ${REPO_PATH}/pins-api:latest
+
+          # Push both tags
+          docker push ${REPO_PATH}/pins-api:${{ github.sha }}
+          docker push ${REPO_PATH}/pins-api:latest
 
           # Save the image name as an output
-          echo "image_name=$IMAGE_NAME" >> $GITHUB_OUTPUT
+          echo "image_name=${REPO_PATH}/pins-api:${{ github.sha }}" >> $GITHUB_OUTPUT
 
   deploy:
     name: 🚀 Deploy
