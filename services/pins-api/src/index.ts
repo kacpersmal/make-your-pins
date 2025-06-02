@@ -17,7 +17,7 @@ server.get('/health', async () => {
 });
 
 server.get('/ping', async (request, reply) => {
-  return 'pong\n';
+  return 'pong 2\n';
 });
 
 const start = async () => {
