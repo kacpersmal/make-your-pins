@@ -7,7 +7,7 @@ const server = fastify({
   logger: process.env.NODE_ENV !== 'production',
 });
 
-server.register(cors, {
+void server.register(cors, {
   origin: true, // Allow all origins in development, configure this for production
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
 });
@@ -30,11 +30,21 @@ const start = async () => {
       host: '0.0.0.0', // Important for containerized environments
     });
 
-    console.log(`Server listening on ${server.server.address().port}`);
+    if (server && server.server) {
+      server.log.info(
+        `Server is running on port ${server?.server?.address()?.toString() || port}`,
+      );
+    } else {
+      server.log.error('Server instance is not available');
+    }
   } catch (err) {
     server.log.error(err);
-    process.exit(1);
+    throw err;
   }
 };
 
-start();
+// Fix the ESLint error by adding a catch handler to the Promise
+start().catch(err => {
+  console.error('Failed to start server:', err);
+  throw err;
+});
