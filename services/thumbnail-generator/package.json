@@ -2,7 +2,7 @@
   "name": "file-processor-function",
   "version": "1.0.0",
   "description": "Cloud Function to process uploaded files",
-  "main": "index.js",
+  "main": "src/index.js",
   "dependencies": {
     "@google-cloud/functions-framework": "^3.1.0"
   },
