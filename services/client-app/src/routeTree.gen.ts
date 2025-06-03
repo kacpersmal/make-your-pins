@@ -11,12 +11,26 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as IndexV2Import } from './routes/indexV2'
+import { Route as AppImport } from './routes/app'
 import { Route as IndexImport } from './routes/index'
 import { Route as DemoTanstackQueryImport } from './routes/demo.tanstack-query'
 import { Route as DemoTableImport } from './routes/demo.table'
 import { Route as DemoStoreImport } from './routes/demo.store'
 
 // Create/Update Routes
+
+const IndexV2Route = IndexV2Import.update({
+  id: '/indexV2',
+  path: '/indexV2',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AppRoute = AppImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -53,6 +67,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppImport
+      parentRoute: typeof rootRoute
+    }
+    '/indexV2': {
+      id: '/indexV2'
+      path: '/indexV2'
+      fullPath: '/indexV2'
+      preLoaderRoute: typeof IndexV2Import
+      parentRoute: typeof rootRoute
+    }
     '/demo/store': {
       id: '/demo/store'
       path: '/demo/store'
@@ -81,6 +109,8 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app': typeof AppRoute
+  '/indexV2': typeof IndexV2Route
   '/demo/store': typeof DemoStoreRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -88,6 +118,8 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/app': typeof AppRoute
+  '/indexV2': typeof IndexV2Route
   '/demo/store': typeof DemoStoreRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -96,6 +128,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/app': typeof AppRoute
+  '/indexV2': typeof IndexV2Route
   '/demo/store': typeof DemoStoreRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -103,15 +137,36 @@ export interface FileRoutesById {
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/demo/store' | '/demo/table' | '/demo/tanstack-query'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/indexV2'
+    | '/demo/store'
+    | '/demo/table'
+    | '/demo/tanstack-query'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/demo/store' | '/demo/table' | '/demo/tanstack-query'
-  id: '__root__' | '/' | '/demo/store' | '/demo/table' | '/demo/tanstack-query'
+  to:
+    | '/'
+    | '/app'
+    | '/indexV2'
+    | '/demo/store'
+    | '/demo/table'
+    | '/demo/tanstack-query'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/indexV2'
+    | '/demo/store'
+    | '/demo/table'
+    | '/demo/tanstack-query'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRoute
+  IndexV2Route: typeof IndexV2Route
   DemoStoreRoute: typeof DemoStoreRoute
   DemoTableRoute: typeof DemoTableRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
@@ -119,6 +174,8 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRoute,
+  IndexV2Route: IndexV2Route,
   DemoStoreRoute: DemoStoreRoute,
   DemoTableRoute: DemoTableRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
@@ -135,6 +192,8 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/app",
+        "/indexV2",
         "/demo/store",
         "/demo/table",
         "/demo/tanstack-query"
@@ -142,6 +201,12 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/app": {
+      "filePath": "app.tsx"
+    },
+    "/indexV2": {
+      "filePath": "indexV2.tsx"
     },
     "/demo/store": {
       "filePath": "demo.store.tsx"
