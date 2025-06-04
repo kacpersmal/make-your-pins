@@ -9,7 +9,6 @@ export class FirestoreService {
 
   constructor(private readonly firebaseService: FirebaseService) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       this.firestore = this.firebaseService.getApp().firestore();
       this.logger.log('Firestore initialized successfully.');
     } catch (error) {
@@ -26,6 +25,7 @@ export class FirestoreService {
       this.logger.error('Firestore is not initialized');
       throw new Error('Firestore is not initialized');
     }
+
     return this.firestore;
   }
 }

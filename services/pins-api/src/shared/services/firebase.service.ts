@@ -17,14 +17,10 @@ export class FirebaseService implements OnModuleInit {
     }
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const credentials: admin.credential.Credential =
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         admin.credential.applicationDefault() as admin.credential.Credential;
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       this.firebaseApp = admin.initializeApp({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         credential: credentials,
       });
 
