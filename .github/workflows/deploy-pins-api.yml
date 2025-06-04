@@ -57,12 +57,26 @@ jobs:
           cat > Dockerfile << EOF
           FROM node:20-alpine
           WORKDIR /app
+
+          # Copy package files
           COPY package*.json ./
-          COPY build ./build
+
+          # Install production dependencies only
           RUN npm ci --omit=dev
+
+          # Copy build files
+          COPY build ./build
+
+          # Set NODE_ENV
+          ENV NODE_ENV=production
+
+          # Expose the port
           EXPOSE 8080
-          CMD ["node", "build/index.js"]
+
+          # Command to run the application
+          CMD ["node", "build/src/main.js"]
           EOF
+
 
           # Set repository path
           REPO_PATH="europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/make-your-pins"
