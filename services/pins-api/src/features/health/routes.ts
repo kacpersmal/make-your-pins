@@ -7,6 +7,7 @@ export async function healthRoutes(fastify: FastifyInstance) {
     '/protected',
     {
       preHandler: [fastify.authenticate],
+      schema: {security: [{bearerAuth: []}]},
     },
     protectedEndpoint,
   );

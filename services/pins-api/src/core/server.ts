@@ -2,7 +2,7 @@ import {buildApp} from './app';
 import {config} from './config';
 
 export async function startServer() {
-  const server = buildApp();
+  const server = await buildApp();
 
   try {
     await server.listen({
