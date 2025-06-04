@@ -61,7 +61,7 @@ jobs:
           COPY build ./build
           RUN npm ci --omit=dev
           EXPOSE 8080
-          CMD ["node", "build/src/index.js"]
+          CMD ["node", "build/index.js"]
           EOF
 
           # Set repository path
