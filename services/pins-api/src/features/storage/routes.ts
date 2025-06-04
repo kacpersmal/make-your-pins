@@ -8,6 +8,7 @@ export async function storageRoutes(fastify: FastifyInstance) {
     {
       preHandler: [fastify.authenticate],
       schema: {
+        security: [{bearerAuth: []}],
         body: {
           type: 'object',
           properties: {
