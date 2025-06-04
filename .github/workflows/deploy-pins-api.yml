@@ -74,7 +74,7 @@ jobs:
           EXPOSE 8080
 
           # Command to run the application
-          CMD ["node", "build/src/main.js"]
+          CMD ["node", "build/main.js"]
           EOF
 
 
