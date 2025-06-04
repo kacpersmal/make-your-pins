@@ -45,7 +45,7 @@ function UploadDemo() {
       // Step 1: Get a signed URL from our API (using fetch)
       const tokenResponse = await currentUser.getIdToken()
 
-      const uploadUrlResponse = await fetch(`${API_URL}/storage/upload-url`, {
+      const uploadUrlResponse = await fetch(`${API_URL}/files/upload-url`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -60,7 +60,11 @@ function UploadDemo() {
         throw new Error('Failed to get upload URL')
       }
 
-      const { url: signedUrl, fileName } = await uploadUrlResponse.json()
+      const {
+        url: signedUrl,
+        fileName,
+        publicUrl,
+      } = await uploadUrlResponse.json()
       console.log('Signed URL:', signedUrl)
       console.log('File type:', file.type)
       console.log('File size:', file.size)
@@ -97,14 +101,13 @@ function UploadDemo() {
         // Set up the request
         xhr.open('PUT', signedUrl)
         xhr.setRequestHeader('Content-Type', file.type)
-        xhr.setRequestHeader('Content-Length', file.size.toString())
+        //xhr.setRequestHeader('Content-Length', file.size.toString())
         // Send the file
         xhr.send(file)
       })
 
       // Step 3: Get the public URL for the uploaded file
-      const fileUrl = `https://storage.googleapis.com/make-your-pin-assets/original/${fileName}`
-      setUploadedFileUrl(fileUrl)
+      setUploadedFileUrl(publicUrl)
 
       // Reset file input
       if (fileInputRef.current) {
