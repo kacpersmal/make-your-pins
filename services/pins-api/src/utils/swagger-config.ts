@@ -1,5 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
 
 const ConfigureSwagger = (app: INestApplication) => {
   const config = new DocumentBuilder()
@@ -9,8 +10,18 @@ const ConfigureSwagger = (app: INestApplication) => {
     .addBearerAuth()
     .build();
 
+  const theme = new SwaggerTheme();
+
+  const options = {
+    explorer: true,
+    customCss: theme.getBuffer(SwaggerThemeNameEnum.DARK),
+    swagggerOptions: {
+      persistAuthorization: true,
+    },
+  };
+
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('swagger', app, documentFactory);
+  SwaggerModule.setup('swagger', app, documentFactory, options);
 };
 
 export default ConfigureSwagger;
