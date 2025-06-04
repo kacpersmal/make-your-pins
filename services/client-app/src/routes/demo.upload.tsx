@@ -60,11 +60,7 @@ function UploadDemo() {
         throw new Error('Failed to get upload URL')
       }
 
-      const {
-        url: signedUrl,
-        fileName,
-        publicUrl,
-      } = await uploadUrlResponse.json()
+      const { url: signedUrl, publicUrl } = await uploadUrlResponse.json()
       console.log('Signed URL:', signedUrl)
       console.log('File type:', file.type)
       console.log('File size:', file.size)
@@ -101,7 +97,7 @@ function UploadDemo() {
         // Set up the request
         xhr.open('PUT', signedUrl)
         xhr.setRequestHeader('Content-Type', file.type)
-        //xhr.setRequestHeader('Content-Length', file.size.toString())
+        // xhr.setRequestHeader('Content-Length', file.size.toString())
         // Send the file
         xhr.send(file)
       })

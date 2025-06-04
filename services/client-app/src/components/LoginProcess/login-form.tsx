@@ -1,10 +1,10 @@
+import React, { useState } from 'react'
+import { useAuth } from '../../lib/auth-context'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import React, { useState } from 'react'
-import { useAuth } from '../../lib/auth-context'
 
 export function LoginForm({
   className,
@@ -13,12 +13,13 @@ export function LoginForm({
   // uniwerrsal
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  //register
+
+  const [_error, setError] = useState('')
+  // register
   const [signUpFlag, setSignUpFlag] = useState(false)
   const [confirmPassword, setConfirmPassword] = useState('')
   const { signUp } = useAuth()
-  //login
+  // login
   const { signIn, signInWithGoogle } = useAuth()
 
   // register form handler
@@ -38,7 +39,7 @@ export function LoginForm({
     }
   }
 
-  //Login form handler
+  // Login form handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
@@ -50,7 +51,7 @@ export function LoginForm({
       console.error(err)
     }
   }
-  //login with google
+  // login with google
   const handleGoogleSignIn = async () => {
     setError('')
 
