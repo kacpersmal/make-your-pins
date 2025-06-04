@@ -34,7 +34,7 @@ jobs:
 
       - name: Build application
         working-directory: services/pins-api
-        run: npm run compile
+        run: npm run build
 
       - name: Setup Google Cloud SDK
         uses: google-github-actions/auth@v1
