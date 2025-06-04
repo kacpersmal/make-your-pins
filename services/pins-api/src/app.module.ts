@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { SharedModule } from './shared/shared.module';
 import { ConfigModule } from '@nestjs/config';
 import { validateEnv } from 'src/utils/validate-env';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { validateEnv } from 'src/utils/validate-env';
       validate: validateEnv,
     }),
     SharedModule,
+    FilesModule,
   ],
   controllers: [],
   providers: [],

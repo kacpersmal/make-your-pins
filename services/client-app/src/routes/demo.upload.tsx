@@ -16,7 +16,7 @@ function UploadDemo() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { currentUser } = useAuth()
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null
@@ -45,7 +45,7 @@ function UploadDemo() {
       // Step 1: Get a signed URL from our API (using fetch)
       const tokenResponse = await currentUser.getIdToken()
 
-      const uploadUrlResponse = await fetch(`${API_URL}/storage/upload-url`, {
+      const uploadUrlResponse = await fetch(`${API_URL}/files/upload-url`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -60,7 +60,11 @@ function UploadDemo() {
         throw new Error('Failed to get upload URL')
       }
 
-      const { url: signedUrl, fileName } = await uploadUrlResponse.json()
+      const {
+        url: signedUrl,
+        fileName,
+        publicUrl,
+      } = await uploadUrlResponse.json()
       console.log('Signed URL:', signedUrl)
       console.log('File type:', file.type)
       console.log('File size:', file.size)
@@ -103,8 +107,7 @@ function UploadDemo() {
       })
 
       // Step 3: Get the public URL for the uploaded file
-      const fileUrl = `https://storage.googleapis.com/make-your-pin-assets/original/${fileName}`
-      setUploadedFileUrl(fileUrl)
+      setUploadedFileUrl(publicUrl)
 
       // Reset file input
       if (fileInputRef.current) {

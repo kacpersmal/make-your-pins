@@ -19,6 +19,8 @@ export function validateEnv(config: Record<string, unknown>) {
     GOOGLE_APPLICATION_CREDENTIALS: isDevelopment
       ? Joi.string().required()
       : Joi.string().optional(),
+
+    ASSETS_BUCKET_NAME: Joi.string().required(),
   });
 
   // Validate

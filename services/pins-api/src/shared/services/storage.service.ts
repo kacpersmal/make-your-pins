@@ -37,4 +37,12 @@ export class StorageService implements OnModuleInit {
       throw new Error('Google Cloud Storage initialization failed');
     }
   }
+
+  getStorage(): Storage {
+    if (!this.storage) {
+      this.logger.error('Google Cloud Storage is not initialized');
+      throw new Error('Google Cloud Storage is not initialized');
+    }
+    return this.storage;
+  }
 }
