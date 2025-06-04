@@ -3,6 +3,7 @@ import { SharedModule } from './shared/shared.module';
 import { ConfigModule } from '@nestjs/config';
 import { validateEnv } from 'src/utils/validate-env';
 import { FilesModule } from './files/files.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { FilesModule } from './files/files.module';
     }),
     SharedModule,
     FilesModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

@@ -16,7 +16,7 @@ function UploadDemo() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { currentUser } = useAuth()
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null
@@ -101,7 +101,7 @@ function UploadDemo() {
         // Set up the request
         xhr.open('PUT', signedUrl)
         xhr.setRequestHeader('Content-Type', file.type)
-        xhr.setRequestHeader('Content-Length', file.size.toString())
+        //xhr.setRequestHeader('Content-Length', file.size.toString())
         // Send the file
         xhr.send(file)
       })

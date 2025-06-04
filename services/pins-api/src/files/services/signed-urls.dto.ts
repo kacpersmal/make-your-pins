@@ -1,4 +1,4 @@
-import { IsIn, IsUUID } from 'class-validator';
+import { IsIn, IsOptional } from 'class-validator';
 
 const ALLOWED_CONTENT_TYPES = [
   'application/octet-stream',
@@ -18,9 +18,12 @@ export class UserUploadUrl {
 }
 
 export class GenerateUploadUrl {
-  @IsUUID()
   userId: string;
-
-  @IsIn(ALLOWED_CONTENT_TYPES)
   contentType: AllowedContentTypes = 'image/jpeg'; // Optional, defaults to 'image/jpeg'
+}
+
+export class UploadUrlRequestDto {
+  @IsIn(ALLOWED_CONTENT_TYPES)
+  @IsOptional()
+  contentType: AllowedContentTypes = 'image/jpeg';
 }
