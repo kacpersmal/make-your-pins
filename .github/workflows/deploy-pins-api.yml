@@ -132,8 +132,7 @@ jobs:
             --concurrency=80 \
             --max-instances=2 \
             --min-instances=0 \
-            --set-env-vars="NODE_ENV=production"
-
+            --set-env-vars="NODE_ENV=production,ASSETS_BUCKET_NAME=${{ secrets.ASSETS_BUCKET_NAME }}"
           # Get the deployed URL
           URL=$(gcloud run services describe pins-api --region=europe-central2 --format='value(status.url)')
           echo "DEPLOYED_URL=$URL" >> $GITHUB_ENV
