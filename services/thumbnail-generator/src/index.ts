@@ -1,27 +1,12 @@
 import * as functions from '@google-cloud/functions-framework';
 import {CloudEvent} from '@google-cloud/functions-framework';
 import {Firestore} from '@google-cloud/firestore';
+import {Storage} from '@google-cloud/storage';
+import * as sharp from 'sharp';
+import * as path from 'path';
 
 const firestore = new Firestore();
-async function testFirestoreConnection() {
-  try {
-    // Create a test collection
-    const testCollection = firestore.collection('connection_tests');
-
-    // Create a test document
-    const docRef = await testCollection.add({
-      timestamp: new Date(),
-      message: 'Firestore connection test',
-      source: 'thumbnail-generator',
-    });
-
-    console.log('Successfully wrote to Firestore with document ID:', docRef.id);
-    return true;
-  } catch (error) {
-    console.error('Firestore connection test failed:', error);
-    throw error;
-  }
-}
+const storage = new Storage();
 
 // Define interface for file object in Cloud Storage events
 interface StorageObjectData {
@@ -36,22 +21,71 @@ interface StorageObjectData {
   metadata?: Record<string, string>;
 }
 
-// Create a storage client
+/**
+ * Generate thumbnail file name from original file name
+ * @param fileName Original file name
+ * @returns Thumbnail file name
+ */
+function getThumbnailName(fileName: string): string {
+  return fileName.replace(/(\.[\w\d]+)$/, '-thumbnail$1');
+}
+
+/**
+ * Extract user ID from file path
+ * Pattern: users/{userId}/{fileName}
+ * @param filePath File path in storage
+ * @returns User ID or null if not found
+ */
+function extractUserIdFromPath(filePath: string): string | null {
+  const parts = filePath.split('/');
+  if (parts.length >= 2 && parts[0] === 'users') {
+    return parts[1];
+  }
+  return null;
+}
+
+/**
+ * Check if file is an image based on content type
+ * @param contentType Content type of the file
+ * @returns True if file is an image
+ */
+function isImage(contentType?: string): boolean {
+  return !!contentType && contentType.startsWith('image/');
+}
+
+/**
+ * Generate thumbnail for an image
+ * @param inputBuffer Original image buffer
+ * @param maxWidth Maximum width of thumbnail
+ * @param maxHeight Maximum height of thumbnail
+ * @returns Processed image buffer
+ */
+async function generateThumbnail(
+  inputBuffer: Buffer,
+  maxWidth = 300,
+  maxHeight = 300
+): Promise<Buffer> {
+  return sharp(inputBuffer)
+    .resize({
+      width: maxWidth,
+      height: maxHeight,
+      fit: sharp.fit.inside,
+      withoutEnlargement: true,
+    })
+    .toBuffer();
+}
 
 /**
  * Cloud Function triggered by Cloud Storage when a file is uploaded
- *
- * @param {CloudEvent} cloudEvent The CloudEvent from Cloud Storage
  */
 functions.cloudEvent(
   'processUploadedFile',
   async (cloudEvent: CloudEvent<StorageObjectData>) => {
     try {
-      console.log('IT WORKS');
-      // Log event information
+      console.log('Thumbnail generator started');
       console.log('Event ID:', cloudEvent.id);
       console.log('Event Type:', cloudEvent.type);
-      await testFirestoreConnection();
+
       // Get file information from the event
       const file = cloudEvent.data;
       if (!file) {
@@ -60,11 +94,59 @@ functions.cloudEvent(
 
       console.log('Bucket:', file.bucket);
       console.log('File:', file.name);
-      console.log('Metadata:', file.metadata || {});
+      console.log('Content Type:', file.contentType);
 
-      // Here you would add your thumbnail generation logic
-      console.log('Processing file:', file.name);
+      // Skip if this is already a thumbnail
+      if (file.name?.includes('-thumbnail')) {
+        console.log('This is already a thumbnail, skipping processing');
+        return;
+      }
 
+      // Only process images
+      if (!isImage(file.contentType)) {
+        console.log(
+          `File ${file.name} is not an image (${file.contentType}), skipping`
+        );
+        return;
+      }
+
+      // Extract user ID from file path
+      const userId = extractUserIdFromPath(file.name);
+      if (!userId) {
+        console.log(`Could not extract user ID from path: ${file.name}`);
+        return;
+      }
+
+      // Generate thumbnail name
+      const fileName = path.basename(file.name);
+      const thumbnailName = getThumbnailName(fileName);
+      const thumbnailPath = file.name.replace(fileName, thumbnailName);
+
+      console.log(
+        `Processing ${file.name} to create thumbnail at ${thumbnailPath}`
+      );
+
+      // Download the file
+      const bucket = storage.bucket(file.bucket);
+      const [fileContent] = await bucket.file(file.name).download();
+
+      // Generate thumbnail
+      const thumbnailBuffer = await generateThumbnail(fileContent);
+
+      // Upload the thumbnail
+      await bucket.file(thumbnailPath).save(thumbnailBuffer, {
+        metadata: {
+          contentType: file.contentType,
+          metadata: {
+            source: 'thumbnail-generator',
+            originalFile: file.name,
+          },
+        },
+      });
+
+      console.log(`Thumbnail created successfully at ${thumbnailPath}`);
+
+      console.log('Processing completed successfully');
       return Promise.resolve();
     } catch (error) {
       console.error('Error processing file:', error);
