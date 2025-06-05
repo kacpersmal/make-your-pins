@@ -7,5 +7,6 @@ import { SharedModule } from 'src/shared/shared.module';
   imports: [SharedModule],
   providers: [SignedUrlsService],
   controllers: [FilesController],
+  exports: [SignedUrlsService],
 })
 export class FilesModule {}

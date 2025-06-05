@@ -28,10 +28,11 @@ export class SignedUrlsService {
     const expiresInSeconds = 3600; // one hour
 
     const fileName = this.generateUniqueFileName();
+    const filePath = this.generateFilePath('users', userId, fileName);
 
     const urlResult = await this.generateSignedUrl(
       bucketName,
-      `users/${userId}/${fileName}`,
+      filePath,
       'write',
       expiresInSeconds,
       contentType,
@@ -43,6 +44,18 @@ export class SignedUrlsService {
       fileName,
       expiresIn: expiresInSeconds,
     };
+  }
+
+  generateFilePath(
+    context: 'users',
+    ownerId: string,
+    fileName: string,
+    subFolder?: string,
+  ): string {
+    if (subFolder) {
+      return `${context}/${ownerId}/${subFolder}/${fileName}`;
+    }
+    return `${context}/${ownerId}/${fileName}`;
   }
 
   async generateSignedUrl(

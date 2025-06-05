@@ -60,11 +60,15 @@ function UploadDemo() {
         throw new Error('Failed to get upload URL')
       }
 
-      const { url: signedUrl, publicUrl } = await uploadUrlResponse.json()
+      const {
+        url: signedUrl,
+        publicUrl,
+        ...dt
+      } = await uploadUrlResponse.json()
       console.log('Signed URL:', signedUrl)
       console.log('File type:', file.type)
       console.log('File size:', file.size)
-
+      console.log(dt)
       // Step 2: Upload the file to the signed URL using XMLHttpRequest
       // to track progress
       await new Promise<void>((resolve, reject) => {
