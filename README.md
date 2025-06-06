@@ -10,6 +10,8 @@ A cloud-based platform for sharing and managing digital assets like images, vide
 | Pins API            | ![Pins API Deployment](https://github.com/kacpersmal/make-your-pins/actions/workflows/deploy-pins-api.yml/badge.svg)             | ![Pins API Build](https://github.com/kacpersmal/make-your-pins/actions/workflows/pins-api-build.yml/badge.svg)     |
 | Thumbnail Generator | ![Thumbnail Generator Deployment](https://github.com/kacpersmal/make-your-pins/actions/workflows/deploy-generator.yml/badge.svg) | ![Generator Build](https://github.com/kacpersmal/make-your-pins/actions/workflows/generator-build.yml/badge.svg)   |
 
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/kacpersmal/make-your-pins?utm_source=oss&utm_medium=github&utm_campaign=kacpersmal%2Fmake-your-pins&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
 ## 🚀 Getting Started
 
 - Node.js v20+
