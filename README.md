@@ -4,7 +4,7 @@ A cloud-based platform for sharing and managing digital assets like images, vide
 
 ## 📊 Status
 
-| Service             | Production Status                                                                                                                | Dev Build Status                                                                                                   |
+| Service             | Deployment Status                                                                                                                | Dev Build Status                                                                                                   |
 | ------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | Client App          | ![Client App Deployment](https://github.com/kacpersmal/make-your-pins/actions/workflows/deploy-client.yml/badge.svg)             | ![Client App Build](https://github.com/kacpersmal/make-your-pins/actions/workflows/client-app-build.yml/badge.svg) |
 | Pins API            | ![Pins API Deployment](https://github.com/kacpersmal/make-your-pins/actions/workflows/deploy-pins-api.yml/badge.svg)             | ![Pins API Build](https://github.com/kacpersmal/make-your-pins/actions/workflows/pins-api-build.yml/badge.svg)     |

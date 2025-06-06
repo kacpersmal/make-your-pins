@@ -1,0 +1,27 @@
+# Add 'client app' label to any changes in the client-app directory
+"client app":
+  - "services/client-app/**/*"
+
+# Add 'pins api' label to any changes in the pins-api directory
+"pins api":
+  - "services/pins-api/**/*"
+
+# Add 'thumbnail generator' label to any changes in the thumbnail-generator directory
+"thumbnail generator":
+  - "services/thumbnail-generator/**/*"
+
+# Add 'infrastructure' label to any changes in terraform or infrastructure related files
+"infrastructure":
+  - "terraform/**/*"
+  - ".github/workflows/**/*"
+
+# Add 'documentation' label to any changes to documentation files
+"documentation":
+  - "**/*.md"
+  - "**/docs/**/*"
+
+# Add 'dependencies' label to any changes to package files
+"dependencies":
+  - "**/package.json"
+  - "**/package-lock.json"
+  - "**/yarn.lock"
