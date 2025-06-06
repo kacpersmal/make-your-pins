@@ -18,6 +18,7 @@ import { Route as DemoUploadImport } from './routes/demo.upload'
 import { Route as DemoTanstackQueryImport } from './routes/demo.tanstack-query'
 import { Route as DemoTableImport } from './routes/demo.table'
 import { Route as DemoStoreImport } from './routes/demo.store'
+import { Route as DemoApiImport } from './routes/demo.api'
 
 // Create/Update Routes
 
@@ -63,6 +64,12 @@ const DemoStoreRoute = DemoStoreImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const DemoApiRoute = DemoApiImport.update({
+  id: '/demo/api',
+  path: '/demo/api',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -86,6 +93,13 @@ declare module '@tanstack/react-router' {
       path: '/indexV2'
       fullPath: '/indexV2'
       preLoaderRoute: typeof IndexV2Import
+      parentRoute: typeof rootRoute
+    }
+    '/demo/api': {
+      id: '/demo/api'
+      path: '/demo/api'
+      fullPath: '/demo/api'
+      preLoaderRoute: typeof DemoApiImport
       parentRoute: typeof rootRoute
     }
     '/demo/store': {
@@ -125,6 +139,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
   '/indexV2': typeof IndexV2Route
+  '/demo/api': typeof DemoApiRoute
   '/demo/store': typeof DemoStoreRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -135,6 +150,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
   '/indexV2': typeof IndexV2Route
+  '/demo/api': typeof DemoApiRoute
   '/demo/store': typeof DemoStoreRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -146,6 +162,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRoute
   '/indexV2': typeof IndexV2Route
+  '/demo/api': typeof DemoApiRoute
   '/demo/store': typeof DemoStoreRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -158,6 +175,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/indexV2'
+    | '/demo/api'
     | '/demo/store'
     | '/demo/table'
     | '/demo/tanstack-query'
@@ -167,6 +185,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/indexV2'
+    | '/demo/api'
     | '/demo/store'
     | '/demo/table'
     | '/demo/tanstack-query'
@@ -176,6 +195,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/indexV2'
+    | '/demo/api'
     | '/demo/store'
     | '/demo/table'
     | '/demo/tanstack-query'
@@ -187,6 +207,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRoute
   IndexV2Route: typeof IndexV2Route
+  DemoApiRoute: typeof DemoApiRoute
   DemoStoreRoute: typeof DemoStoreRoute
   DemoTableRoute: typeof DemoTableRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
@@ -197,6 +218,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRoute,
   IndexV2Route: IndexV2Route,
+  DemoApiRoute: DemoApiRoute,
   DemoStoreRoute: DemoStoreRoute,
   DemoTableRoute: DemoTableRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
@@ -216,6 +238,7 @@ export const routeTree = rootRoute
         "/",
         "/app",
         "/indexV2",
+        "/demo/api",
         "/demo/store",
         "/demo/table",
         "/demo/tanstack-query",
@@ -230,6 +253,9 @@ export const routeTree = rootRoute
     },
     "/indexV2": {
       "filePath": "indexV2.tsx"
+    },
+    "/demo/api": {
+      "filePath": "demo.api.tsx"
     },
     "/demo/store": {
       "filePath": "demo.store.tsx"
