@@ -2,6 +2,14 @@
 
 A cloud-based platform for sharing and managing digital assets like images, videos, and 3D files, built on Google Cloud Platform.
 
+## 📊 Status
+
+| Service             | Production Status                                                                                                                | Dev Build Status                                                                                                   |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Client App          | ![Client App Deployment](https://github.com/kacpersmal/make-your-pins/actions/workflows/deploy-client.yml/badge.svg)             | ![Client App Build](https://github.com/kacpersmal/make-your-pins/actions/workflows/client-app-build.yml/badge.svg) |
+| Pins API            | ![Pins API Deployment](https://github.com/kacpersmal/make-your-pins/actions/workflows/deploy-pins-api.yml/badge.svg)             | ![Pins API Build](https://github.com/kacpersmal/make-your-pins/actions/workflows/pins-api-build.yml/badge.svg)     |
+| Thumbnail Generator | ![Thumbnail Generator Deployment](https://github.com/kacpersmal/make-your-pins/actions/workflows/deploy-generator.yml/badge.svg) | ![Generator Build](https://github.com/kacpersmal/make-your-pins/actions/workflows/generator-build.yml/badge.svg)   |
+
 ## 🚀 Getting Started
 
 - Node.js v20+
