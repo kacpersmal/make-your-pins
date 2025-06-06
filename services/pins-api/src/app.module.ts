@@ -6,6 +6,8 @@ import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
 import { AssetsModule } from './assets/assets.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { GlobalExceptionFilter } from './shared/filters/global-exception.filter';
+import { APP_FILTER } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -24,6 +26,11 @@ import { CacheModule } from '@nestjs/cache-manager';
     AssetsModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}
