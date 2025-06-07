@@ -34,7 +34,7 @@ jobs:
 
       - name: Build application
         working-directory: services/pins-api
-        run: npm run compile
+        run: npm run build
 
       - name: Setup Google Cloud SDK
         uses: google-github-actions/auth@v1
@@ -53,17 +53,6 @@ jobs:
         working-directory: services/pins-api
         id: save_image_name
         run: |
-          # Create Dockerfile
-          cat > Dockerfile << EOF
-          FROM node:20-alpine
-          WORKDIR /app
-          COPY package*.json ./
-          COPY build ./build
-          RUN npm ci --omit=dev
-          EXPOSE 8080
-          CMD ["node", "build/src/index.js"]
-          EOF
-
           # Set repository path
           REPO_PATH="europe-central2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/make-your-pins"
 
@@ -118,8 +107,7 @@ jobs:
             --concurrency=80 \
             --max-instances=2 \
             --min-instances=0 \
-            --set-env-vars="NODE_ENV=production"
-
+            --set-env-vars="NODE_ENV=production,ASSETS_BUCKET_NAME=${{ secrets.ASSETS_BUCKET_NAME }}"
           # Get the deployed URL
           URL=$(gcloud run services describe pins-api --region=europe-central2 --format='value(status.url)')
           echo "DEPLOYED_URL=$URL" >> $GITHUB_ENV

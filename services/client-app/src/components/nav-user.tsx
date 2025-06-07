@@ -1,5 +1,6 @@
 'use client'
 import { useAuth } from '@/lib/auth-context'
+
 import logo from '../logo.svg'
 import {
   BadgeCheck,

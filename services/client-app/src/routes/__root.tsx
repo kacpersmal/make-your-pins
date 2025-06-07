@@ -26,7 +26,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
           </div>
         </main>
       </SidebarProvider>
-      <div className="fixed inset-0 -z-10 h-full w-full bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_30%,#616E9A_100%)]"></div>
+      <div className="fixed inset-0 -z-10 h-full w-full  bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_30%,#616E9A_100%)]"></div>
     </div>
   ),
 })
