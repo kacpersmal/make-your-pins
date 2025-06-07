@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { useNavigate } from '@tanstack/react-router'
 import { ApiErrorType } from '../lib/api-client'
 import type { ErrorInfo, ReactNode } from 'react'
 import type { ApiError } from '../lib/api-client'

@@ -1,10 +1,11 @@
 import apiClient from '../lib/api-client'
+import { auth } from '../lib/firebase-config'
 import type {
   AssetResponseDto,
   CreateAssetDto,
   PaginatedAssetsResponseDto,
   UpdateAssetDto,
-} from '../types/asset-types'
+} from '../../types/asset-types'
 
 export class AssetService {
   private baseUrl = '/assets'

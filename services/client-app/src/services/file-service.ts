@@ -1,5 +1,5 @@
 import apiClient from '../lib/api-client'
-import type { UserUploadUrl } from '../types/file-types'
+import type { UserUploadUrl } from '../../types/file-types'
 
 export class FileService {
   private baseUrl = '/files'
