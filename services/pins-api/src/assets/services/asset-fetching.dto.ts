@@ -3,6 +3,32 @@ import { Type } from 'class-transformer';
 import { IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { AssetFile, AssetTag } from './asset-creation.dto';
 
+export class AssetOwnerDto {
+  @ApiProperty({
+    description: 'User ID of the owner',
+    example: 'user123',
+  })
+  id: string;
+
+  @ApiProperty({
+    description: 'Display name of the owner',
+    example: 'John Doe',
+  })
+  displayName: string;
+
+  @ApiPropertyOptional({
+    description: 'Email of the owner',
+    example: 'john.doe@example.com',
+  })
+  email?: string;
+
+  @ApiPropertyOptional({
+    description: 'Profile photo URL',
+    example: 'https://example.com/photo.jpg',
+  })
+  photoURL?: string;
+}
+
 export class AssetQueryDto {
   @ApiPropertyOptional({
     description: 'Search by asset name (case-insensitive)',
@@ -98,6 +124,12 @@ export class AssetResponseDto {
     example: 'user123',
   })
   ownerId: string;
+
+  @ApiProperty({
+    description: 'Owner information',
+    type: AssetOwnerDto,
+  })
+  owner: AssetOwnerDto;
 
   @ApiProperty({
     description: 'Creation timestamp',

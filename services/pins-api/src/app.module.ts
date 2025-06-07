@@ -6,6 +6,7 @@ import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
 import { AssetsModule } from './assets/assets.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CacheModule } from '@nestjs/cache-manager';
     FilesModule,
     AuthModule,
     AssetsModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],
