@@ -97,7 +97,6 @@ export function AuthFormV2() {
             >
               <AuthRegisterForm
                 hanldeRegisterFlag={setRegisterFlag}
-                handleSubmit={onSubmit}
                 form={registerForm}
               />
             </motion.div>

@@ -11,13 +11,10 @@ import { useAuth } from '@/lib/auth-context'
 
 export default function AuthRegisterForm({
   hanldeRegisterFlag,
-  handleSubmit,
+
   form,
 }: {
   hanldeRegisterFlag: Dispatch<SetStateAction<boolean>>
-  handleSubmit: (
-    values: z.infer<typeof registerFromSchema>,
-  ) => void | Promise<void>
   form: UseFormReturn<z.infer<typeof registerFromSchema>>
 }) {
   const { signUp } = useAuth()
