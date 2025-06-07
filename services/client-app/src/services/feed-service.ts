@@ -1,5 +1,5 @@
 import apiClient from '../lib/api-client'
-import type { PaginatedAssetsResponseDto } from '../../types/asset-types'
+import type { PaginatedAssetsResponseDto } from '../types/asset-types'
 import type { FeedQueryParams } from '../types/user-types'
 
 export class FeedService {
