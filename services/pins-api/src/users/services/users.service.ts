@@ -11,4 +11,9 @@ export class UsersService {
     const users = await this.firebase.getApp().auth().getUsers(ids);
     return users;
   }
+
+  async getUserData(userId: string) {
+    const user = await this.firebase.getApp().auth().getUser(userId);
+    return user;
+  }
 }
