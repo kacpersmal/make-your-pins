@@ -59,6 +59,7 @@ export function LoginForm({
     } catch (err) {
       setError('Failed to sign in with Google.')
       console.error(err)
+      console.error(error)
     }
   }
 

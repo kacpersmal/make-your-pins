@@ -25,20 +25,20 @@ import { cn } from '@/lib/utils'
 type AuthFormFieldProps<TSchema extends Record<string, any>> = {
   form: UseFormReturn<TSchema>
   label: string
-  description: string
-  placeholder: string
-  className: string
   name: Path<TSchema>
-  inputType: string
+  description?: string
+  placeholder?: string
+  className?: string
+  inputType?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url'
 }
 export default function AuthFormField<TSchema extends Record<string, any>>({
   form,
   label,
-  description,
-  placeholder,
-  className,
+  description = '',
+  placeholder = '',
+  className = '',
   name,
-  inputType,
+  inputType = 'text',
 }: AuthFormFieldProps<TSchema>) {
   return (
     <div className={cn('grid gap-3', className)}>
@@ -52,7 +52,7 @@ export default function AuthFormField<TSchema extends Record<string, any>>({
             <FormControl>
               <Input placeholder={placeholder} {...field} type={inputType} />
             </FormControl>
-            <FormDescription>{description}</FormDescription>
+            {description && <FormDescription>{description}</FormDescription>}
             <FormMessage />
           </FormItem>
         )}

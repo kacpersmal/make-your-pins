@@ -30,35 +30,19 @@ export default function AuthRegisterForm({
               label="Email"
               description=""
               placeholder="example@gmail.com"
-              className=""
-              inputType=""
             />
-            <AuthFormField
-              name="username"
-              form={form}
-              label="Username"
-              description=""
-              placeholder=""
-              className=""
-              inputType=""
-            />
+            <AuthFormField name="username" form={form} label="Username" />
             <AuthFormField
               name="password"
               inputType="password"
               form={form}
               label="Password"
-              description=""
-              placeholder=""
-              className=""
             />
             <AuthFormField
               name="confirm"
               inputType="password"
               form={form}
               label="Confirm Password"
-              description=""
-              placeholder=""
-              className=""
             />
           </div>
 
@@ -75,7 +59,7 @@ export default function AuthRegisterForm({
             <Button
               variant="ghost"
               onClick={(e) => {
-                e.preventDefault
+                e.preventDefault()
                 hanldeRegisterFlag(false)
               }}
             >

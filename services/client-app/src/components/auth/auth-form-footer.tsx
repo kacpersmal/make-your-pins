@@ -19,6 +19,7 @@ export default function AuthFormFooter({
     } catch (err) {
       setError('Failed to sign in with Google.')
       console.error(err)
+      console.error(error)
     }
   }
   return (
@@ -43,7 +44,7 @@ export default function AuthFormFooter({
         <Button
           variant="ghost"
           onClick={(e) => {
-            e.preventDefault
+            e.preventDefault()
             hanldeRegisterFlag(true)
           }}
         >

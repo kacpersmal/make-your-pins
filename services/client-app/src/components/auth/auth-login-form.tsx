@@ -26,19 +26,13 @@ export default function AuthLoginForm({
             name="email"
             form={form}
             label="Email"
-            description=""
             placeholder="example@gmail.com"
-            className=""
-            inputType=""
           />
           <AuthFormField
             name="password"
             inputType="password"
             form={form}
             label="Password"
-            description=""
-            placeholder=""
-            className=""
           />
           <Button
             type="submit"
