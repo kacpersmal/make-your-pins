@@ -49,7 +49,13 @@ function RouteComponent() {
         </div>
       </ScrollArea>
 
-      {currentUser ? '' : <LoginModal className="" />}
+      {currentUser ? (
+        ''
+      ) : (
+        <div className="h-screen">
+          <LoginModal className="" />{' '}
+        </div>
+      )}
     </div>
   )
 }

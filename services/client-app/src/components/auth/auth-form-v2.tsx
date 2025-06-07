@@ -1,10 +1,12 @@
 'use client'
+import { useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import AuthLoginForm from './auth-login-form'
 import AuthRegisterForm from './auth-register-form'
+import { motion, AnimatePresence } from 'framer-motion'
 
 import AuthFormSide from './auth-form-side'
 export const formSchema = z.object({
@@ -34,6 +36,8 @@ export const registerFromSchema = z
   })
 
 export function AuthFormV2() {
+  const [registerFlag, setRegisterFlag] = useState(false)
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: 'onTouched',
@@ -57,10 +61,39 @@ export function AuthFormV2() {
 
   return (
     <>
-      <Card className="overflow-hidden min-h-96 p-0 shadow-2xl/80">
-        <CardContent className="grid p-0 h-full md:grid-cols-2">
-          <AuthLoginForm handleSubmit={onSubmit} form={form} />
-          {/* <AuthRegisterForm handleSubmit={onSubmit} form={registerForm} /> */}
+      <Card className="overflow-hidden h-full p-0 shadow-2xl/80">
+        <CardContent className="grid p-0  h-full md:grid-cols-2">
+          {!registerFlag ? (
+            <AnimatePresence>
+              <motion.div
+                className="mb-auto mt-auto"
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 50 }}
+              >
+                <AuthLoginForm
+                  hanldeRegisterFlag={setRegisterFlag}
+                  handleSubmit={onSubmit}
+                  form={form}
+                />
+              </motion.div>
+            </AnimatePresence>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 50 }}
+              className="mb-auto mt-auto"
+            >
+              <AuthRegisterForm
+                hanldeRegisterFlag={setRegisterFlag}
+                handleSubmit={onSubmit}
+                form={registerForm}
+              />
+            </motion.div>
+          )}
+
+          {/* <AuthLoginForm handleSubmit={onSubmit} form={form} /> */}
           <AuthFormSide />
         </CardContent>
       </Card>

@@ -1,9 +1,14 @@
 import { useState } from 'react'
 import { Button } from '../ui/button'
 import { useAuth } from '@/lib/auth-context'
+import type { Dispatch, SetStateAction } from 'react'
 
 import AuthFormLoginButton from './auth-form-media-button'
-export default function AuthFormFooter() {
+export default function AuthFormFooter({
+  hanldeRegisterFlag,
+}: {
+  hanldeRegisterFlag: Dispatch<SetStateAction<boolean>>
+}) {
   const [error, setError] = useState('')
   const { signInWithGoogle } = useAuth()
   const handleGoogleSignIn = async () => {
@@ -38,7 +43,8 @@ export default function AuthFormFooter() {
         <Button
           variant="ghost"
           onClick={(e) => {
-            e.preventDefault()
+            e.preventDefault
+            hanldeRegisterFlag(true)
           }}
         >
           Sign up
