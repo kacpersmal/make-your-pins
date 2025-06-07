@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form'
 import AuthLoginForm from './auth-login-form'
 import AuthRegisterForm from './auth-register-form'
 import { motion, AnimatePresence } from 'framer-motion'
-
+import { useAuth } from '@/lib/auth-context'
 import AuthFormSide from './auth-form-side'
 export const formSchema = z.object({
   email: z.string().email(),
@@ -21,7 +21,7 @@ export const registerFromSchema = z
     email: z.string().email(),
     username: z
       .string()
-      .min(5, { message: 'Username must be minimum 6 characters' })
+      .min(6, { message: 'Username must be minimum 6 characters' })
       .max(20, { message: 'Username cannot be longer than 12 characters' }),
     password: z
       .string()
@@ -36,6 +36,8 @@ export const registerFromSchema = z
   })
 
 export function AuthFormV2() {
+  const [error, setError] = useState('')
+  const { signIn } = useAuth()
   const [registerFlag, setRegisterFlag] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -57,7 +59,15 @@ export function AuthFormV2() {
       confirm: '',
     },
   })
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {}
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      await signIn(values.email, values.password)
+    } catch (err) {
+      setError('Failed to sign in. Please check your credentials.')
+      console.error(err)
+      console.error(error)
+    }
+  }
 
   return (
     <>

@@ -6,6 +6,8 @@ import type { UseFormReturn } from 'react-hook-form'
 import type { Dispatch, SetStateAction } from 'react'
 import { z } from 'zod'
 import { Button } from '../ui/button'
+import { useState } from 'react'
+import { useAuth } from '@/lib/auth-context'
 
 export default function AuthRegisterForm({
   hanldeRegisterFlag,
@@ -18,9 +20,27 @@ export default function AuthRegisterForm({
   ) => void | Promise<void>
   form: UseFormReturn<z.infer<typeof registerFromSchema>>
 }) {
+  const { signUp } = useAuth()
+  const [error, setError] = useState('')
+  const handleRegisterSubmit = async (
+    values: z.infer<typeof registerFromSchema>,
+  ) => {
+    setError('')
+    try {
+      await signUp(values.email, values.password)
+    } catch (err) {
+      setError('Failed to create an account.')
+      console.error(err)
+      console.error(error)
+    }
+  }
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+      <form
+        onSubmit={form.handleSubmit(handleRegisterSubmit)}
+        className="space-y-8"
+      >
         <div className="flex flex-col p-2 gap-6 pl-4 pr-4 mb-10 mt-5 ">
           <AuthFormHeader h1={'Register'} p={'Create your account'} />
           <div className="">
