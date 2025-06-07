@@ -3,13 +3,13 @@ name: 🏞️ Generator Build
 on:
   push:
     branches:
-      - dev
+      - develop
     paths:
       - "services/thumbnail-generator/**"
   pull_request:
     branches:
       - main
-      - dev
+      - develop
     paths:
       - "services/thumbnail-generator/**"
 

@@ -3,13 +3,13 @@ name: 🔌 Pins API Build
 on:
   push:
     branches:
-      - dev
+      - develop
     paths:
       - "services/pins-api/**"
   pull_request:
     branches:
       - main
-      - dev
+      - develop
     paths:
       - "services/pins-api/**"
 
