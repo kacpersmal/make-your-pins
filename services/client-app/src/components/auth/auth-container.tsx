@@ -1,11 +1,5 @@
-import { AuthFormV2 } from '@/components/auth/auth-form-v2'
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/indexV2')({
-  component: RouteComponent,
-})
-
-function RouteComponent() {
+import { AuthFormV2 } from './auth-form-v2'
+export default function AuthContainer() {
   return (
     <div className={`fixed inset-0 z-50 backdrop-blur-sm`}>
       <div className="flex h-full flex-col items-center justify-center p-6 md:p-10 ">

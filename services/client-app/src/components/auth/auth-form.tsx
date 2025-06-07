@@ -13,13 +13,12 @@ export function LoginForm({
   // uniwerrsal
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-
-  const [_error, setError] = useState('')
-  // register
+  const [error, setError] = useState('')
+  //register
   const [signUpFlag, setSignUpFlag] = useState(false)
   const [confirmPassword, setConfirmPassword] = useState('')
   const { signUp } = useAuth()
-  // login
+  //login
   const { signIn, signInWithGoogle } = useAuth()
 
   // register form handler
@@ -39,7 +38,7 @@ export function LoginForm({
     }
   }
 
-  // Login form handler
+  //Login form handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
@@ -51,7 +50,7 @@ export function LoginForm({
       console.error(err)
     }
   }
-  // login with google
+  //login with google
   const handleGoogleSignIn = async () => {
     setError('')
 
@@ -60,6 +59,7 @@ export function LoginForm({
     } catch (err) {
       setError('Failed to sign in with Google.')
       console.error(err)
+      console.error(error)
     }
   }
 
@@ -72,6 +72,7 @@ export function LoginForm({
             className="p-6 md:p-8"
           >
             <div className="flex flex-col gap-6">
+              {/* authHeader */}
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">
                   {!signUpFlag ? 'Welcome' : 'Create an account'}
@@ -81,6 +82,9 @@ export function LoginForm({
                   {!signUpFlag ? 'Login to your account' : ''}
                 </p>
               </div>
+              {/* authHeader end */}
+
+              {/* Inputs */}
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -109,6 +113,8 @@ export function LoginForm({
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
+              {/* END inputs */}
+
               {/* confirm password only show when signing up */}
               {signUpFlag ? (
                 <div className="grid gap-3">
