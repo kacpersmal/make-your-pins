@@ -38,9 +38,9 @@ export default function AuthRegisterForm({
         onSubmit={form.handleSubmit(handleRegisterSubmit)}
         className="space-y-8"
       >
-        <div className="flex flex-col p-2 gap-6 pl-4 pr-4 mb-10 mt-5 ">
+        <div className="flex flex-col p-2 gap-6  pl-4 pr-4 mb-10 mt-5 ">
           <AuthFormHeader h1={'Register'} p={'Create your account'} />
-          <div className="">
+          <div className=" flex flex-col gap-6">
             <AuthFormField
               name="email"
               form={form}

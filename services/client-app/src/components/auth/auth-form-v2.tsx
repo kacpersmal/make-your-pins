@@ -76,7 +76,7 @@ export function AuthFormV2() {
           {!registerFlag ? (
             <AnimatePresence>
               <motion.div
-                className="mb-auto mt-auto"
+                className="mb-auto mt-auto p-6"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 50 }}
@@ -93,7 +93,7 @@ export function AuthFormV2() {
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 50 }}
-              className="mb-auto mt-auto"
+              className="mb-auto mt-auto p-6"
             >
               <AuthRegisterForm
                 hanldeRegisterFlag={setRegisterFlag}
