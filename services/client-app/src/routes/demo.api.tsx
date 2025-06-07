@@ -2,7 +2,6 @@ import { createFileRoute } from '@tanstack/react-router'
 import React from 'react'
 import { useAssets } from '../hooks/use-assets'
 import { ErrorBoundary } from '../components/error-boundary'
-import type { AssetResponseDto, AssetTag } from '../../types/asset-types'
 
 export const Route = createFileRoute('/demo/api')({
   component: RouteComponent,

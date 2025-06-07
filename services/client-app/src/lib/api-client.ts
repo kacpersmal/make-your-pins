@@ -29,7 +29,8 @@ export const queryClient = new QueryClient({
       gcTime: 10 * 60 * 1000, // 10 minutes
       refetchOnWindowFocus: 'always', // Auto refresh data when window regains focus
       refetchOnReconnect: true, // Auto refresh when reconnecting
-      keepPreviousData: true, // Keep old data while fetching new data
+      // Replace keepPreviousData with placeholderData
+      placeholderData: 'keepPrevious', // Keep old data while fetching new data
     },
     mutations: {
       retry: false,
