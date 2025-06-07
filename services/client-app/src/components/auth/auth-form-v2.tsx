@@ -31,7 +31,7 @@ export const registerFromSchema = z
     confirm: z.string(),
   })
   .refine((data) => data.password === data.confirm, {
-    message: "Passwords doesn't match",
+    message: "Passwords don't match",
     path: ['confirm'],
   })
 
