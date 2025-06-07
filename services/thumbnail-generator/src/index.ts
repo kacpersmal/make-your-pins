@@ -154,7 +154,7 @@ functions.cloudEvent(
 
       console.log(`Thumbnail created successfully at ${thumbnailPath}`);
 
-      await updateAssetWithThumbnail(fileName, thumbnailName, thumbnailPath);
+      //await updateAssetWithThumbnail(fileName, thumbnailName, thumbnailPath);
 
       console.log('Processing completed successfully');
       return Promise.resolve();
