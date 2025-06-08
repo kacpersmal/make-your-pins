@@ -31,4 +31,36 @@ export class UsersService {
       throw error;
     }
   }
+
+  async listUsersPaged(
+    options: {
+      maxResults?: number;
+      pageToken?: string;
+    } = {},
+  ): Promise<{
+    users: UserRecord[];
+    pageToken?: string;
+  }> {
+    const maxResults = options.maxResults || 1000;
+    const pageToken = options.pageToken;
+
+    try {
+      this.logger.debug(
+        `Listing users with maxResults=${maxResults}, pageToken=${pageToken || 'none'}`,
+      );
+
+      const listUsersResult = await this.firebase
+        .getApp()
+        .auth()
+        .listUsers(maxResults, pageToken);
+
+      return {
+        users: listUsersResult.users,
+        pageToken: listUsersResult.pageToken,
+      };
+    } catch (error) {
+      this.logger.error(`Error listing users: ${error.message}`);
+      throw error;
+    }
+  }
 }

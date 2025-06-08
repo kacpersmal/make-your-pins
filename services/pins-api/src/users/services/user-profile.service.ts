@@ -99,27 +99,67 @@ export class UserProfileService {
     currentUserId?: string,
   ): Promise<PaginatedUserProfilesResponseDto> {
     const { name, limit, page } = queryParams;
+    const pageSize = limit;
+    const startIndex = page * pageSize;
 
     try {
-      // First get all users from Firebase Auth
-      const { users } = await this.usersService.listUsers(1000);
+      // Collection of users matching our criteria
+      const matchedUsers: admin.auth.UserRecord[] = [];
+      // Track total user count for accurate pagination
+      let totalUsers = 0;
+      let hasMoreUsers = true;
+      let nextPageToken: string | undefined;
 
-      // Filter by name if provided
-      let filteredUsers = users;
-      if (name) {
-        const lowerName = name.toLowerCase();
-        filteredUsers = users.filter((user) =>
-          (user.displayName?.toLowerCase() || '').includes(lowerName),
-        );
+      // We need to fetch enough users to reach our page + limit
+      // For example, if page=2, limit=10, we need users 20-30 (0-indexed)
+      const targetUserCount = startIndex + pageSize;
+
+      this.logger.log(`Fetching users for page ${page} with limit ${limit}`);
+
+      // Fetch users in batches until we have enough for the requested page
+      while (hasMoreUsers && matchedUsers.length < targetUserCount) {
+        // Fetch a batch of users (100 is max allowed by Firebase)
+        const batchSize = Math.min(100, targetUserCount - matchedUsers.length);
+
+        const listUsersResult = await this.usersService.listUsersPaged({
+          maxResults: batchSize,
+          pageToken: nextPageToken,
+        });
+
+        // Update pagination state
+        nextPageToken = listUsersResult.pageToken;
+        hasMoreUsers = !!nextPageToken;
+        totalUsers += listUsersResult.users.length;
+
+        // Filter by name if provided
+        const filteredBatch = name
+          ? listUsersResult.users.filter((user) =>
+              (user.displayName?.toLowerCase() || '').includes(
+                name.toLowerCase(),
+              ),
+            )
+          : listUsersResult.users;
+
+        // Add filtered users to our collection
+        matchedUsers.push(...filteredBatch);
+
+        // Stop if we've reached the end
+        if (!hasMoreUsers) {
+          break;
+        }
       }
 
-      // Get total count
-      const total = filteredUsers.length;
+      this.logger.debug(
+        `Fetched ${totalUsers} total users, found ${matchedUsers.length} matching users`,
+      );
 
-      // Calculate pagination
-      const offset = page * limit;
-      const paginatedUsers = filteredUsers.slice(offset, offset + limit);
-      const pages = Math.ceil(total / limit);
+      // Apply pagination to matched users
+      const paginatedUsers = matchedUsers.slice(
+        startIndex,
+        startIndex + pageSize,
+      );
+      const total = matchedUsers.length;
+      const pages = Math.ceil(total / pageSize);
 
       // Process each user to get full profile data
       const profilePromises = paginatedUsers.map(async (user) => {
@@ -138,6 +178,8 @@ export class UserProfileService {
             followersCount: 0,
             followingCount: 0,
             assetsCount: 0,
+            bio: '',
+            socialLinks: {},
           };
         }
       });
@@ -148,7 +190,7 @@ export class UserProfileService {
         items,
         total,
         page,
-        limit,
+        limit: pageSize,
         pages,
       };
     } catch (error) {

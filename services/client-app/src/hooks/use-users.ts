@@ -111,8 +111,14 @@ export function useUpdateProfile() {
   const { currentUser } = useAuth()
 
   return useMutation({
-    mutationFn: (data: UpdateUserProfileDto) =>
-      userService.updateProfile(data, currentUser?.uid || ''),
+    mutationFn: (data: UpdateUserProfileDto) => {
+      // Check if user is authenticated before making the API call
+      if (!currentUser) {
+        throw new Error('You must be signed in to update your profile')
+      }
+
+      return userService.updateProfile(data, currentUser.uid)
+    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: USERS_KEYS.detail(data.id) })
     },

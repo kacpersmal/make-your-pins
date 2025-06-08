@@ -1,12 +1,13 @@
 import { Binoculars, UserMinus, UserPlus, Users, Videotape } from 'lucide-react'
 import { toast } from 'sonner'
 import { ProfileEdit } from './profile-edit'
+import { StatBadge } from './stat-badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useFollowUser, useUnfollowUser, useUser } from '@/hooks/use-users'
 import { useAuth } from '@/lib/auth-context'
 import { Button } from '@/components/ui/button'
-import { SocialLinks } from './social-links'
-import { StatBadge } from './stat-badge'
+import { SocialLinks } from '@/components/profile/social-links'
+
 type Props = {
   userId: string
 }
@@ -14,7 +15,7 @@ type Props = {
 const ProfileHeader = ({ userId }: Props) => {
   const auth = useAuth()
   const currentUser = auth.currentUser
-  const isOwner = userId == currentUser?.uid
+  const isOwner = userId === currentUser?.uid
 
   const user = useUser(userId)
   const followMutation = useFollowUser()

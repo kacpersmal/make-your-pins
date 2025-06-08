@@ -1,12 +1,7 @@
-import { Github, Linkedin, Youtube, Globe } from 'lucide-react'
+import { Github, Globe, Linkedin, Youtube } from 'lucide-react'
+import type { SocialLinksInterface } from '@/types/user-types'
 
-interface SocialLinksType {
-  github?: string
-  linkedin?: string
-  youtube?: string
-  website?: string
-}
-export const SocialLinks = ({ links }: { links?: SocialLinksType }) => {
+export const SocialLinks = ({ links }: { links?: SocialLinksInterface }) => {
   if (!links || Object.keys(links).length === 0) return null
 
   return (
