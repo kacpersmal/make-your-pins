@@ -30,7 +30,6 @@ export class FirebaseAuthGuard implements CanActivate {
 
     // If there's no authorization header and the endpoint is public, allow access
     if (!authHeader && isPublic) {
-      this.logger.debug('Public endpoint accessed without auth token');
       return true;
     }
 
@@ -48,16 +47,10 @@ export class FirebaseAuthGuard implements CanActivate {
           userId: decodedToken.uid,
         };
 
-        this.logger.debug(`User authenticated: ${decodedToken.uid}`);
         return true;
       } catch (error) {
-        this.logger.error(`Token verification failed: ${error.message}`);
-
         // If the endpoint is public, still allow access even with invalid token
         if (isPublic) {
-          this.logger.debug(
-            'Public endpoint accessed with invalid token, allowing access',
-          );
           return true;
         }
 
