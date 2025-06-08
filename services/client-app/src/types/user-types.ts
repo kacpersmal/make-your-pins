@@ -1,3 +1,9 @@
+export interface SocialLinks {
+  github?: string
+  linkedin?: string
+  youtube?: string
+  website?: string
+}
 export interface UserProfileDto {
   id: string
   displayName: string
@@ -8,6 +14,7 @@ export interface UserProfileDto {
   assetsCount: number
   bio?: string
   isFollowing?: boolean
+  socialLinks?: SocialLinks
 }
 
 export interface PaginatedUserProfilesResponseDto {
@@ -34,4 +41,9 @@ export interface UserQueryParams {
 export interface FeedQueryParams {
   limit?: number
   page?: number
+}
+
+export interface UpdateUserProfileDto {
+  bio?: string
+  socialLinks?: SocialLinks
 }

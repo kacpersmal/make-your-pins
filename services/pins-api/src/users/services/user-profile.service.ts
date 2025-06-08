@@ -11,6 +11,7 @@ import {
   UserProfileQueryDto,
   PaginatedUserProfilesResponseDto,
   FollowUserResponseDto,
+  UpdateUserProfileDto,
 } from './user-profile.dto';
 import * as admin from 'firebase-admin';
 
@@ -59,10 +60,10 @@ export class UserProfileService {
       const assetsCount = await this.getUserAssetsCount(userId);
 
       // Check if current user is following this profile
-      let isFollowing = false;
-      if (currentUserId && currentUserId !== userId) {
-        isFollowing = await this.isFollowing(currentUserId, userId);
-      }
+      const isFollowing = await this.isFollowing(
+        currentUserId ? currentUserId : '',
+        userId,
+      );
 
       // Build and return the profile
       return {
@@ -75,6 +76,7 @@ export class UserProfileService {
         assetsCount,
         bio: profileData?.bio || '',
         isFollowing,
+        socialLinks: profileData?.socialLinks || {},
       };
     } catch (error) {
       this.logger.error(
@@ -151,6 +153,48 @@ export class UserProfileService {
       };
     } catch (error) {
       this.logger.error(`Error listing user profiles: ${error.message}`);
+      throw error;
+    }
+  }
+
+  async updateUserProfile(
+    userId: string,
+    updateData: UpdateUserProfileDto,
+  ): Promise<UserProfileResponseDto> {
+    try {
+      // Validate user exists
+      await this.usersService.getUserData(userId);
+
+      // Get existing profile or create default
+      const profileRef = this.firestore
+        .getFirestore()
+        .collection(this.userProfilesCollection)
+        .doc(userId);
+
+      const profileDoc = await profileRef.get();
+      const existingData = profileDoc.exists ? profileDoc.data() : {};
+
+      // Merge existing data with update data
+      const updatedData = {
+        ...existingData,
+        ...updateData,
+        updatedAt: new Date().toISOString(),
+      };
+
+      // Save to Firestore
+      await profileRef.set(updatedData, { merge: true });
+
+      // Return updated profile
+      return this.getUserProfile(userId);
+    } catch (error) {
+      this.logger.error(
+        `Error updating user profile for ${userId}: ${error.message}`,
+      );
+
+      if (error.code === 'auth/user-not-found') {
+        throw new NotFoundException(`User with ID ${userId} not found`);
+      }
+
       throw error;
     }
   }

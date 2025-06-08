@@ -6,8 +6,72 @@ import {
   Min,
   IsArray,
   IsBoolean,
+  IsUrl,
+  Matches,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+
+export class SocialMediaLinksDto {
+  @ApiPropertyOptional({
+    description: 'GitHub profile URL',
+    example: 'https://github.com/username',
+  })
+  @IsOptional()
+  @IsUrl({
+    protocols: ['http', 'https'],
+    require_protocol: true,
+    require_valid_protocol: true,
+  })
+  @Matches(/^https?:\/\/(www\.)?github\.com\/[a-zA-Z0-9_-]+\/?$/, {
+    message: 'Invalid GitHub URL format',
+  })
+  github?: string;
+
+  @ApiPropertyOptional({
+    description: 'LinkedIn profile URL',
+    example: 'https://linkedin.com/in/username',
+  })
+  @IsOptional()
+  @IsUrl({
+    protocols: ['http', 'https'],
+    require_protocol: true,
+    require_valid_protocol: true,
+  })
+  @Matches(/^https?:\/\/(www\.)?linkedin\.com\/in\/[a-zA-Z0-9_-]+\/?$/, {
+    message: 'Invalid LinkedIn URL format',
+  })
+  linkedin?: string;
+
+  @ApiPropertyOptional({
+    description: 'YouTube channel URL',
+    example: 'https://youtube.com/channel/UC123456789',
+  })
+  @IsOptional()
+  @IsUrl({
+    protocols: ['http', 'https'],
+    require_protocol: true,
+    require_valid_protocol: true,
+  })
+  @Matches(
+    /^https?:\/\/(www\.)?(youtube\.com\/(channel|c|user)\/|youtu\.be\/)[a-zA-Z0-9_-]+\/?$/,
+    {
+      message: 'Invalid YouTube URL format',
+    },
+  )
+  youtube?: string;
+
+  @ApiPropertyOptional({
+    description: 'Personal website URL',
+    example: 'https://mywebsite.com',
+  })
+  @IsOptional()
+  @IsUrl({
+    protocols: ['http', 'https'],
+    require_protocol: true,
+    require_valid_protocol: true,
+  })
+  website?: string;
+}
 
 export class UserProfileResponseDto {
   @ApiProperty({
@@ -63,6 +127,12 @@ export class UserProfileResponseDto {
     example: true,
   })
   isFollowing?: boolean;
+
+  @ApiPropertyOptional({
+    description: 'Social media links',
+    type: SocialMediaLinksDto,
+  })
+  socialLinks?: SocialMediaLinksDto;
 }
 
 export class UserProfileQueryDto {
@@ -179,4 +249,22 @@ export class FeedQueryDto {
   @Min(0)
   @Type(() => Number)
   page: number = 0;
+}
+
+export class UpdateUserProfileDto {
+  @ApiPropertyOptional({
+    description: 'User bio/description',
+    example: 'Digital artist passionate about nature scenes',
+  })
+  @IsOptional()
+  @IsString()
+  bio?: string;
+
+  @ApiPropertyOptional({
+    description: 'Social media links',
+    type: SocialMediaLinksDto,
+  })
+  @IsOptional()
+  @Type(() => SocialMediaLinksDto)
+  socialLinks?: SocialMediaLinksDto;
 }

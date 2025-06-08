@@ -7,6 +7,9 @@ import {
   Query,
   UseGuards,
   HttpCode,
+  Body,
+  Put,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -25,6 +28,7 @@ import {
   UserProfileQueryDto,
   PaginatedUserProfilesResponseDto,
   FollowUserResponseDto,
+  UpdateUserProfileDto,
 } from './services/user-profile.dto';
 
 @Controller('users')
@@ -48,7 +52,31 @@ export class UsersController {
     @Param('userId') userId: string,
     @CurrentUser('userId') currentUserId?: string,
   ): Promise<UserProfileResponseDto> {
+    console.log(currentUserId);
     return this.userProfileService.getUserProfile(userId, currentUserId);
+  }
+
+  @Put(':userId/profile')
+  @ApiOperation({ summary: 'Update a user profile (admin only)' })
+  @ApiParam({ name: 'userId', description: 'User ID to update' })
+  @ApiResponse({
+    status: 200,
+    description: 'Profile updated successfully',
+    type: UserProfileResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Invalid data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async updateUserProfile(
+    @Param('userId') userId: string,
+    @Body() updateData: UpdateUserProfileDto,
+    @CurrentUser('userId') currentUserId: string,
+  ): Promise<UserProfileResponseDto> {
+    if (!currentUserId || currentUserId !== userId) {
+      throw new UnauthorizedException('You can only update your own profile');
+    }
+    return this.userProfileService.updateUserProfile(userId, updateData);
   }
 
   @Get()

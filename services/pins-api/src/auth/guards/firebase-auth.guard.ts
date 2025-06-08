@@ -1,36 +1,75 @@
 import {
   Injectable,
+  CanActivate,
   ExecutionContext,
   UnauthorizedException,
+  Logger,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { Reflector } from '@nestjs/core';
+import { FirebaseService } from 'src/shared/services/firebase.service';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 @Injectable()
-export class FirebaseAuthGuard extends AuthGuard('firebase-jwt') {
-  constructor(private reflector: Reflector) {
-    super();
-  }
+export class FirebaseAuthGuard implements CanActivate {
+  private readonly logger = new Logger(FirebaseAuthGuard.name);
 
-  canActivate(context: ExecutionContext) {
-    // Check if the route is marked as public
+  constructor(
+    private readonly firebase: FirebaseService,
+    private reflector: Reflector,
+  ) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    const authHeader = request.headers.authorization;
+
+    // Check if the endpoint is marked as public
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
 
+    // If there's no authorization header and the endpoint is public, allow access
+    if (!authHeader && isPublic) {
+      this.logger.debug('Public endpoint accessed without auth token');
+      return true;
+    }
+
+    // For endpoints with auth header, try to validate the token
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      try {
+        const token = authHeader.split('Bearer ')[1];
+        const decodedToken = await this.firebase
+          .getApp()
+          .auth()
+          .verifyIdToken(token);
+
+        // Set the user in the request
+        request.user = {
+          userId: decodedToken.uid,
+        };
+
+        this.logger.debug(`User authenticated: ${decodedToken.uid}`);
+        return true;
+      } catch (error) {
+        this.logger.error(`Token verification failed: ${error.message}`);
+
+        // If the endpoint is public, still allow access even with invalid token
+        if (isPublic) {
+          this.logger.debug(
+            'Public endpoint accessed with invalid token, allowing access',
+          );
+          return true;
+        }
+
+        throw new UnauthorizedException('Invalid or expired token');
+      }
+    }
+
+    // No auth header and not public endpoint
     if (isPublic) {
       return true;
     }
 
-    return super.canActivate(context);
-  }
-
-  handleRequest(err: any, user: any, info: any) {
-    if (err || !user) {
-      throw err || new UnauthorizedException('Authentication failed');
-    }
-    return user;
+    throw new UnauthorizedException('Missing authorization header');
   }
 }

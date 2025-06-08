@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { userService } from '../services/user-service'
 import { useAuth } from '../lib/auth-context'
-import type { UserQueryParams } from '../types/user-types'
+import type { UpdateUserProfileDto, UserQueryParams } from '../types/user-types'
 
 // Query keys for React Query
 const USERS_KEYS = {
@@ -98,6 +98,23 @@ export function useUnfollowUser() {
 
       // Invalidate feed data
       queryClient.invalidateQueries({ queryKey: ['feed'] })
+    },
+  })
+}
+
+/**
+ * Hook to update current user profile
+ * @returns Mutation for updating profile
+ */
+export function useUpdateProfile() {
+  const queryClient = useQueryClient()
+  const { currentUser } = useAuth()
+
+  return useMutation({
+    mutationFn: (data: UpdateUserProfileDto) =>
+      userService.updateProfile(data, currentUser?.uid || ''),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: USERS_KEYS.detail(data.id) })
     },
   })
 }

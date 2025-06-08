@@ -1,36 +1,14 @@
+import { Binoculars, UserMinus, UserPlus, Users, Videotape } from 'lucide-react'
+import { toast } from 'sonner'
+import { ProfileEdit } from './profile-edit'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { useUser } from '@/hooks/use-users'
+import { useFollowUser, useUnfollowUser, useUser } from '@/hooks/use-users'
 import { useAuth } from '@/lib/auth-context'
 import { Button } from '@/components/ui/button'
-import {
-  UserPen,
-  UserPlus,
-  UserMinus,
-  Binoculars,
-  Users,
-  Videotape,
-} from 'lucide-react'
-
+import { SocialLinks } from './social-links'
+import { StatBadge } from './stat-badge'
 type Props = {
   userId: string
-}
-
-const StatBadge = ({
-  icon,
-  label,
-  value,
-}: {
-  icon: React.ReactNode
-  label: string
-  value: string
-}) => {
-  return (
-    <div className="flex items-center space-x-1 px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full">
-      <span className="text-gray-600 dark:text-gray-300">{icon}</span>
-      <span className="text-sm font-medium">{value}</span>
-      <span className="text-xs text-gray-500">{label}</span>
-    </div>
-  )
 }
 
 const ProfileHeader = ({ userId }: Props) => {
@@ -39,6 +17,37 @@ const ProfileHeader = ({ userId }: Props) => {
   const isOwner = userId == currentUser?.uid
 
   const user = useUser(userId)
+  const followMutation = useFollowUser()
+  const unfollowMutation = useUnfollowUser()
+
+  const handleFollow = async () => {
+    try {
+      await followMutation.mutateAsync(userId)
+      toast('Success', {
+        description: `You are now following ${user.data?.displayName || 'this user'}.`,
+      })
+    } catch (error) {
+      toast('Error', {
+        description: 'Failed to follow this user. Please try again.',
+      })
+    }
+  }
+
+  const handleUnfollow = async () => {
+    try {
+      await unfollowMutation.mutateAsync(userId)
+      toast('Success', {
+        description: `You have unfollowed ${user.data?.displayName || 'this user'}.`,
+      })
+    } catch (error) {
+      toast('Error', {
+        description: 'Failed to unfollow this user. Please try again.',
+      })
+    }
+  }
+
+  const isFollowing = user.data?.isFollowing || false
+  const isLoading = followMutation.isPending || unfollowMutation.isPending
 
   return (
     <div className="w-full flex flex-col">
@@ -46,9 +55,6 @@ const ProfileHeader = ({ userId }: Props) => {
       <div
         className="w-full h-48 bg-gradient-to-r from-blue-400 to-purple-500 relative"
         style={{
-          backgroundImage: user.data?.bannerURL
-            ? `url(${user.data.bannerURL})`
-            : undefined,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
@@ -79,26 +85,48 @@ const ProfileHeader = ({ userId }: Props) => {
 
               {/* Edit Button (for owner) or Follow Buttons (for others) */}
               {isOwner ? (
-                <Button variant="outline" size="sm">
-                  <UserPen className="h-4 w-4 mr-2" />
-                  Edit Profile
-                </Button>
-              ) : user.data?.isFollowing ? (
-                <Button variant="outline" size="sm">
-                  <UserMinus className="h-4 w-4 mr-2" />
-                  Unfollow
+                <ProfileEdit userId={userId} />
+              ) : isFollowing ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleUnfollow}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <span className="animate-pulse">Processing...</span>
+                  ) : (
+                    <>
+                      <UserMinus className="h-4 w-4 mr-2" />
+                      Unfollow
+                    </>
+                  )}
                 </Button>
               ) : (
-                <Button variant="default" size="sm">
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Follow
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={handleFollow}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <span className="animate-pulse">Processing...</span>
+                  ) : (
+                    <>
+                      <UserPlus className="h-4 w-4 mr-2" />
+                      Follow
+                    </>
+                  )}
                 </Button>
               )}
             </div>
 
-            <p className="text-sm text-gray-500 mt-1">
-              @{user.data?.displayName || userId}
-            </p>
+            <div className="flex items-center mt-1">
+              <span className="text-sm text-gray-500">
+                @{user.data?.displayName || userId}
+              </span>
+              <SocialLinks links={user.data?.socialLinks} />
+            </div>
 
             <p className="text-gray-600 dark:text-gray-300 mt-3 max-w-lg">
               {user.data?.bio ||
@@ -112,17 +140,17 @@ const ProfileHeader = ({ userId }: Props) => {
           <StatBadge
             icon={<Users />}
             label="Followers"
-            value={user.data?.followersCount?.toString() || '0'}
+            value={user.data?.followersCount.toString() || '0'}
           />
           <StatBadge
             icon={<Binoculars />}
             label="Following"
-            value={user.data?.followingCount?.toString() || '0'}
+            value={user.data?.followingCount.toString() || '0'}
           />
           <StatBadge
             icon={<Videotape />}
             label="Assets"
-            value={user.data?.assetsCount?.toString() || '0'}
+            value={user.data?.assetsCount.toString() || '0'}
           />
         </div>
       </div>
