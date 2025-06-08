@@ -1,3 +1,4 @@
+// Update the StatBadge component to be responsive
 export const StatBadge = ({
   icon,
   label,
@@ -8,10 +9,12 @@ export const StatBadge = ({
   value: string
 }) => {
   return (
-    <div className="flex items-center space-x-1 px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full">
-      <span className="text-gray-600 dark:text-gray-300">{icon}</span>
-      <span className="text-sm font-medium">{value}</span>
-      <span className="text-xs text-gray-500">{label}</span>
+    <div className="flex flex-row items-center p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
+      <div className="mr-2 text-gray-600 dark:text-gray-400">{icon}</div>
+      <div className="">
+        <div className="text-xs text-gray-500 dark:text-gray-400">{label}</div>
+        <div className="font-semibold">{value}</div>
+      </div>
     </div>
   )
 }
