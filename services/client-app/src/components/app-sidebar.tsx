@@ -51,27 +51,27 @@ const items = [
 ]
 const navMain = [
   {
-    title: 'Playground',
+    title: 'Feed',
     url: '#',
     icon: SquareTerminal,
     isActive: false,
     items: [
       {
-        title: 'History',
+        title: 'New',
         url: '#',
       },
       {
-        title: 'Starred',
+        title: 'Popular',
         url: '#',
       },
       {
-        title: 'Settings',
+        title: 'Trending',
         url: '#',
       },
     ],
   },
   {
-    title: 'Models',
+    title: 'Upload',
     url: '#',
     icon: Bot,
     items: [
@@ -90,7 +90,7 @@ const navMain = [
     ],
   },
   {
-    title: 'Documentation',
+    title: 'Assets',
     url: '#',
     icon: BookOpen,
     items: [
@@ -112,12 +112,18 @@ const navMain = [
       },
     ],
   },
+  {
+    title: 'Followed',
+    url: '#',
+    icon: BookOpen,
+    items: [],
+  },
 ]
 
 export function AppSidebar() {
   return (
     <Sidebar collapsible="icon" className="">
-      <SidebarContent className="bg-transparent">
+      <SidebarContent className="bg-transparent test">
         <NavMain items={navMain} />
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
