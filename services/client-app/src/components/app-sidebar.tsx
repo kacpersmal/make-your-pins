@@ -70,39 +70,21 @@ const navMain = [
       },
     ],
   },
-  {
-    title: 'Upload',
-    url: '#',
-    icon: Bot,
-    items: [
-      {
-        title: 'Photos',
-        url: '/demo/upload',
-      },
-      
-    ],
-  },
+ 
   {
     title: 'Assets',
     url: '#',
     icon: BookOpen,
     items: [
       {
-        title: 'Introduction',
-        url: '#',
+        title: 'Upload',
+        url: '/demo/upload',
       },
       {
-        title: 'Get Started',
+        title: 'Your Assets',
         url: '#',
       },
-      {
-        title: 'Tutorials',
-        url: '#',
-      },
-      {
-        title: 'Changelog',
-        url: '#',
-      },
+      
     ],
   },
   {
