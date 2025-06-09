@@ -53,7 +53,7 @@ function RouteComponent() {
         ''
       ) : (
         <div className="h-screen">
-          <AuthContainer className="" />{' '}
+          <AuthContainer />{' '}
         </div>
       )}
     </div>
