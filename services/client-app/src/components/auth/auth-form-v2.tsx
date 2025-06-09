@@ -42,7 +42,7 @@ export function AuthFormV2() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: 'onTouched',
+    mode: 'onChange',
     defaultValues: {
       email: '',
       password: '',
@@ -51,7 +51,7 @@ export function AuthFormV2() {
 
   const registerForm = useForm<z.infer<typeof registerFromSchema>>({
     resolver: zodResolver(registerFromSchema),
-    mode: 'onTouched',
+    mode: 'onChange',
     defaultValues: {
       email: '',
       username: '',
