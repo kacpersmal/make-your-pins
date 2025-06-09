@@ -5,7 +5,7 @@ import type {
   CreateAssetDto,
   PaginatedAssetsResponseDto,
   UpdateAssetDto,
-} from '../../types/asset-types'
+} from '../types/asset-types'
 
 export class AssetService {
   private baseUrl = '/assets'
