@@ -52,21 +52,21 @@ const items = [
 const navMain = [
   {
     title: 'Feed',
-    url: '#',
+    url: '/app',
     icon: SquareTerminal,
     isActive: false,
     items: [
       {
         title: 'New',
-        url: '#',
+        url: '/app',
       },
       {
         title: 'Popular',
-        url: '#',
+        url: '/app',
       },
       {
         title: 'Trending',
-        url: '#',
+        url: '/app',
       },
     ],
   },
@@ -76,17 +76,10 @@ const navMain = [
     icon: Bot,
     items: [
       {
-        title: 'Genesis',
-        url: '#',
+        title: 'Photos',
+        url: '/demo/upload',
       },
-      {
-        title: 'Explorer',
-        url: '#',
-      },
-      {
-        title: 'Quantum',
-        url: '#',
-      },
+      
     ],
   },
   {
@@ -116,7 +109,13 @@ const navMain = [
     title: 'Followed',
     url: '#',
     icon: BookOpen,
-    items: [],
+    items: [
+      {
+        title: 'Store',
+        url: '/demo/store',
+      },
+     
+    ],
   },
 ]
 
