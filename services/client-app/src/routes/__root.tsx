@@ -3,6 +3,7 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/app-sidebar'
 import '../globals.css'
 // import Header from '../components/Header'
+import { Toaster } from '@/components/ui/sonner'
 
 // import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 // import TanStackQueryLayout from '../integrations/tanstack-query/layout.tsx'
@@ -27,6 +28,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         </main>
       </SidebarProvider>
       <div className="fixed inset-0 -z-10 h-full w-full  bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_30%,#616E9A_100%)]"></div>
+      <Toaster />
     </div>
   ),
 })

@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { assetService } from '../services/asset-service'
 import { useAuth } from '../lib/auth-context'
-import type { CreateAssetDto, UpdateAssetDto } from '../../types/asset-types'
+import type { CreateAssetDto, UpdateAssetDto } from '../types/asset-types'
 // Keys for React Query
 const ASSETS_KEYS = {
   all: ['assets'] as const,

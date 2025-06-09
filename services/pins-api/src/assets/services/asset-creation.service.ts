@@ -208,6 +208,14 @@ export class AssetCreationService {
   }
 
   private getThumbnailName(fileName: string): string {
-    return fileName.replace(/(\.[\w\d]+)$/, '-thumbnail$1');
+    // More robust regex that handles various file extensions
+    const withThumbnail = fileName.replace(/(\.[^.\\/]+)$/, '-thumbnail$1');
+
+    // Fallback if regex didn't work (no extension or regex failed)
+    if (withThumbnail === fileName) {
+      return `${fileName}-thumbnail`;
+    }
+
+    return withThumbnail;
   }
 }
