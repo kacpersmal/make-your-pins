@@ -10,6 +10,7 @@ import { routeTree } from './routeTree.gen'
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 import { AuthProvider } from '@/lib/auth-context.tsx'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 // Create a new router instance
 const router = createRouter({
@@ -40,6 +41,7 @@ if (rootElement && !rootElement.innerHTML) {
         <AuthProvider>
           <RouterProvider router={router} />
         </AuthProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
       </TanStackQueryProvider.Provider>
     </StrictMode>,
   )
