@@ -9,6 +9,8 @@ import {
 import { toast } from 'sonner'
 import { ProfileEdit } from './profile-edit'
 import { StatBadge } from './stat-badge'
+import type { UseQueryResult } from '@tanstack/react-query'
+import type { UserProfileDto } from '@/types/user-types'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useFollowUser, useUnfollowUser, useUser } from '@/hooks/use-users'
 import { useAuth } from '@/lib/auth-context'
@@ -18,15 +20,17 @@ import { useIsMobile } from '@/hooks/use-mobile'
 
 type Props = {
   userId: string
+  userQuery: UseQueryResult<UserProfileDto, Error>
 }
 
-const ProfileHeader = ({ userId }: Props) => {
+const ProfileHeader = ({ userId, userQuery }: Props) => {
   const auth = useAuth()
   const currentUser = auth.currentUser
   const isOwner = userId === currentUser?.uid
   const isMobile = useIsMobile()
 
-  const user = useUser(userId)
+  // Using the userQuery passed from the parent route component
+  const user = userQuery.data
   const followMutation = useFollowUser()
   const unfollowMutation = useUnfollowUser()
 
@@ -34,7 +38,7 @@ const ProfileHeader = ({ userId }: Props) => {
     try {
       await followMutation.mutateAsync(userId)
       toast('Success', {
-        description: `You are now following ${user.data?.displayName || 'this user'}.`,
+        description: `You are now following ${user?.displayName || 'this user'}.`,
       })
     } catch (error) {
       toast('Error', {
@@ -47,7 +51,7 @@ const ProfileHeader = ({ userId }: Props) => {
     try {
       await unfollowMutation.mutateAsync(userId)
       toast('Success', {
-        description: `You have unfollowed ${user.data?.displayName || 'this user'}.`,
+        description: `You have unfollowed ${user?.displayName || 'this user'}.`,
       })
     } catch (error) {
       toast('Error', {
@@ -56,7 +60,7 @@ const ProfileHeader = ({ userId }: Props) => {
     }
   }
 
-  const isFollowing = user.data?.isFollowing || false
+  const isFollowing = user?.isFollowing || false
   const isLoading = followMutation.isPending || unfollowMutation.isPending
 
   return (
@@ -67,6 +71,7 @@ const ProfileHeader = ({ userId }: Props) => {
         style={{
           backgroundSize: 'cover',
           backgroundPosition: 'center',
+          backgroundImage: undefined,
         }}
       />
 
@@ -83,11 +88,11 @@ const ProfileHeader = ({ userId }: Props) => {
         >
           <Avatar className={`${isMobile ? 'w-24 h-24' : 'w-32 h-32'}`}>
             <AvatarImage
-              src={user.data?.photoURL || ''}
-              alt={user.data?.displayName || 'Profile'}
+              src={user?.photoURL || ''}
+              alt={user?.displayName || 'Profile'}
             />
             <AvatarFallback>
-              {(user.data?.displayName || 'U')[0].toUpperCase()}
+              {(user?.displayName || 'U')[0].toUpperCase()}
             </AvatarFallback>
           </Avatar>
         </div>
@@ -105,7 +110,7 @@ const ProfileHeader = ({ userId }: Props) => {
               className={`flex ${isMobile ? 'flex-col items-center' : 'items-center gap-4'}`}
             >
               <h1 className="text-xl sm:text-2xl font-bold">
-                {user.data?.displayName || 'Unknown User'}
+                {user?.displayName || 'Unknown User'}
               </h1>
 
               {/* Edit/Follow Button - full width on mobile */}
@@ -166,9 +171,9 @@ const ProfileHeader = ({ userId }: Props) => {
               className={`flex items-center ${isMobile ? 'justify-center' : ''} mt-1`}
             >
               <span className="text-sm text-gray-500">
-                @{user.data?.displayName || userId}
+                @{user?.displayName || userId}
               </span>
-              <SocialLinks links={user.data?.socialLinks} />
+              <SocialLinks links={user?.socialLinks} />
             </div>
 
             <p
@@ -177,7 +182,7 @@ const ProfileHeader = ({ userId }: Props) => {
               ${isMobile ? 'text-center' : 'max-w-lg'}
             `}
             >
-              {user.data?.bio ||
+              {user?.bio ||
                 (isOwner ? 'Add a bio to your profile' : 'No bio available')}
             </p>
           </div>
@@ -194,17 +199,17 @@ const ProfileHeader = ({ userId }: Props) => {
           <StatBadge
             icon={<Users />}
             label="Followers"
-            value={user.data?.followersCount.toString() || '0'}
+            value={user?.followersCount.toString() || '0'}
           />
           <StatBadge
             icon={<Binoculars />}
             label="Following"
-            value={user.data?.followingCount.toString() || '0'}
+            value={user?.followingCount.toString() || '0'}
           />
           <StatBadge
             icon={<Videotape />}
             label="Assets"
-            value={user.data?.assetsCount.toString() || '0'}
+            value={user?.assetsCount.toString() || '0'}
           />
         </div>
       </div>

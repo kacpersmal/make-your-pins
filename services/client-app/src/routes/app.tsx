@@ -1,8 +1,10 @@
-import AuthContainer from '@/components/auth/auth-container'
 import { createFileRoute } from '@tanstack/react-router'
+import AuthContainer from '@/components/auth/auth-container'
 import { useAuth } from '@/lib/auth-context'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { SearchInput } from '@/components/ui/search-input'
+import { usePageTitle } from '@/hooks/use-pageTitle'
+
 export const Route = createFileRoute('/app')({
   component: RouteComponent,
 })
