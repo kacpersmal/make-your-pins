@@ -77,7 +77,7 @@ export default function AuthRegisterForm({
               variant="ghost"
               onClick={(e) => {
                 e.preventDefault()
-                hanldeRegisterFlag(false)
+                handleRegisterFlag(false)
               }}
             >
               Log in

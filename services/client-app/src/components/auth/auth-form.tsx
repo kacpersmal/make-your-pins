@@ -97,7 +97,7 @@ export function AuthForm() {
               className="mb-auto mt-auto p-6"
             >
               <AuthRegisterForm
-                hanldeRegisterFlag={setRegisterFlag}
+                handleRegisterFlag={setRegisterFlag}
                 form={registerForm}
               />
             </motion.div>
