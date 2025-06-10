@@ -112,14 +112,40 @@ class ApiClient {
           !originalRequest._retry
         ) {
           originalRequest._retry = true
-          const token = await this.refreshToken()
-          originalRequest.headers.Authorization = `Bearer ${token}`
-          return this.axiosInstance(originalRequest)
+          // Mark this request as a retry so we can detect infinite auth failures
+          originalRequest.headers['X-Retry-Auth'] = 'true'
+
+          try {
+            const token = await this.refreshToken()
+            originalRequest.headers.Authorization = `Bearer ${token}`
+            return this.axiosInstance(originalRequest)
+          } catch (refreshError) {
+            return this.handleAuthError(error)
+          }
+        }
+
+        // Handle other auth errors
+        if (error.response?.status === 401 || error.response?.status === 403) {
+          return this.handleAuthError(error)
         }
 
         return Promise.reject(this.normalizeError(error))
       },
     )
+  }
+
+  private handleAuthError(error: AxiosError) {
+    if (error.response?.status === 401) {
+      // If we get a 401 after trying to refresh the token, the user is truly not authenticated
+      // Force logout in case of persistent auth errors
+      if (error.config.headers['X-Retry-Auth'] === 'true') {
+        console.error('Persistent auth error detected, logging out user')
+        auth.signOut().catch((err) => {
+          console.error('Error during forced sign out:', err)
+        })
+      }
+    }
+    return Promise.reject(this.normalizeError(error))
   }
 
   // Get a valid auth token, refreshing if necessary

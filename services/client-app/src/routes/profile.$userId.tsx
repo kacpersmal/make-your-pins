@@ -2,10 +2,19 @@ import { createFileRoute } from '@tanstack/react-router'
 import ProfileHeader from '@/components/profile/profile-header'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useProfileController } from '@/components/profile/profile-controller'
+import { AuthGuard } from '@/components/auth/auth-guard'
 
 export const Route = createFileRoute('/profile/$userId')({
-  component: ProfilePage,
+  component: ProtectedProfilePage,
 })
+
+function ProtectedProfilePage() {
+  return (
+    <AuthGuard requireAuth={true} redirectTo="/">
+      <ProfilePage />
+    </AuthGuard>
+  )
+}
 
 function ProfilePage() {
   const { userId } = Route.useParams()
