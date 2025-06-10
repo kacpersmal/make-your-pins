@@ -18,7 +18,7 @@ export default function AuthRegisterForm({
   form: UseFormReturn<z.infer<typeof registerFromSchema>>
 }) {
   const { signUp } = useAuth()
-  const [error, setError] = useState('')
+  const [_error, setError] = useState('')
   const handleRegisterSubmit = async (
     values: z.infer<typeof registerFromSchema>,
   ) => {
@@ -27,8 +27,6 @@ export default function AuthRegisterForm({
       await signUp(values.email, values.password)
     } catch (err) {
       setError('Failed to create an account.')
-      console.error(err)
-      console.error(error)
     }
   }
 
