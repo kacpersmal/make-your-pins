@@ -1,6 +1,5 @@
 import {
   BookOpen,
-  Bot,
   SquareTerminal,
   Calendar,
   Home,
@@ -51,65 +50,52 @@ const items = [
 ]
 const navMain = [
   {
-    title: 'Playground',
-    url: '#',
+    title: 'Feed',
+    url: '/app',
     icon: SquareTerminal,
     isActive: false,
     items: [
       {
-        title: 'History',
-        url: '#',
+        title: 'New',
+        url: '/app',
       },
       {
-        title: 'Starred',
-        url: '#',
+        title: 'Popular',
+        url: '/app',
       },
       {
-        title: 'Settings',
-        url: '#',
+        title: 'Trending',
+        url: '/app',
       },
     ],
   },
+ 
   {
-    title: 'Models',
-    url: '#',
-    icon: Bot,
-    items: [
-      {
-        title: 'Genesis',
-        url: '#',
-      },
-      {
-        title: 'Explorer',
-        url: '#',
-      },
-      {
-        title: 'Quantum',
-        url: '#',
-      },
-    ],
-  },
-  {
-    title: 'Documentation',
+    title: 'Assets',
     url: '#',
     icon: BookOpen,
     items: [
       {
-        title: 'Introduction',
-        url: '#',
+        title: 'Upload',
+        url: '/demo/upload',
       },
       {
-        title: 'Get Started',
+        title: 'Your Assets',
         url: '#',
       },
+      
+    ],
+  },
+  {
+    title: 'Followed',
+    url: '#',
+    icon: BookOpen,
+    items: [
       {
-        title: 'Tutorials',
-        url: '#',
+        title: 'Store',
+        url: '/demo/store',
       },
-      {
-        title: 'Changelog',
-        url: '#',
-      },
+     
     ],
   },
 ]
