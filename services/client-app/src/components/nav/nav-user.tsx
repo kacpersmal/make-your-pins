@@ -7,7 +7,7 @@ import {
   LogOut,
   Sparkles,
 } from 'lucide-react'
-import logo from '../logo.svg'
+import logo from '../../logo.svg'
 import { useAuth } from '@/lib/auth-context'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'

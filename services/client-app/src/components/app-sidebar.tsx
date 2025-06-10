@@ -1,13 +1,14 @@
 import {
   BookOpen,
-  SquareTerminal,
   Calendar,
   Home,
   Inbox,
   Search,
   Settings,
+  SquareTerminal,
 } from 'lucide-react'
-import { NavUser } from './nav-user'
+import { NavUser } from './nav/nav-user'
+import { NavMain } from './nav/nav-main'
 import {
   Sidebar,
   SidebarContent,
@@ -19,7 +20,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
-import { NavMain } from './nav-main'
 // Menu items.
 const items = [
   {
@@ -69,7 +69,7 @@ const navMain = [
       },
     ],
   },
- 
+
   {
     title: 'Assets',
     url: '#',
@@ -83,7 +83,6 @@ const navMain = [
         title: 'Your Assets',
         url: '#',
       },
-      
     ],
   },
   {
@@ -95,7 +94,6 @@ const navMain = [
         title: 'Store',
         url: '/demo/store',
       },
-     
     ],
   },
 ]
