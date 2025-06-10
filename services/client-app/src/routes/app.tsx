@@ -29,7 +29,7 @@ function RouteComponent() {
               <Button onClick={handleUploadFlag}>
                 <Upload />
               </Button>
-              {isClosed ? '' : <UploadModal handler={handleUploadFlag} />}
+              {!isClosed ? '' : <UploadModal handler={handleUploadFlag} />}
             </div>
             {/* simulation only for layout*/}
             <div className="bg-black/10 h-[42vh] rounded-2xl"></div>
