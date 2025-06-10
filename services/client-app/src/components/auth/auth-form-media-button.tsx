@@ -39,7 +39,7 @@ export default function AuthFormLoginButton({
       onClick={handler}
     >
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path d={icon?.path} fill="currentColor" />
+        <path d={icon.path} fill="currentColor" />
       </svg>
       <span className="sr-only">{srTextMap[mediaSingIn]}</span>
     </Button>

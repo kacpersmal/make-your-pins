@@ -1,20 +1,20 @@
+import { useState } from 'react'
+import { Button } from '../ui/button'
 import AuthFormField from './auth-form-field'
 import AuthFormHeader from './auth-form-header'
-import { Form } from '@/components/ui/form'
-import { registerFromSchema } from './auth-form-v2'
+import type { registerFromSchema } from './auth-form'
 import type { UseFormReturn } from 'react-hook-form'
+import type { z } from 'zod'
 import type { Dispatch, SetStateAction } from 'react'
-import { z } from 'zod'
-import { Button } from '../ui/button'
-import { useState } from 'react'
+import { Form } from '@/components/ui/form'
 import { useAuth } from '@/lib/auth-context'
 
 export default function AuthRegisterForm({
-  hanldeRegisterFlag,
+  handleRegisterFlag,
 
   form,
 }: {
-  hanldeRegisterFlag: Dispatch<SetStateAction<boolean>>
+  handleRegisterFlag: Dispatch<SetStateAction<boolean>>
   form: UseFormReturn<z.infer<typeof registerFromSchema>>
 }) {
   const { signUp } = useAuth()

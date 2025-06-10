@@ -1,7 +1,4 @@
 'use client'
-import { useAuth } from '@/lib/auth-context'
-
-import logo from '../logo.svg'
 import {
   BadgeCheck,
   Bell,
@@ -10,6 +7,8 @@ import {
   LogOut,
   Sparkles,
 } from 'lucide-react'
+import logo from '../logo.svg'
+import { useAuth } from '@/lib/auth-context'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {

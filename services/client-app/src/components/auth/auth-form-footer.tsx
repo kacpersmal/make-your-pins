@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Button } from '../ui/button'
-import { useAuth } from '@/lib/auth-context'
-import type { Dispatch, SetStateAction } from 'react'
-
 import AuthFormLoginButton from './auth-form-media-button'
+import type { Dispatch, SetStateAction } from 'react'
+import { useAuth } from '@/lib/auth-context'
+
 export default function AuthFormFooter({
   hanldeRegisterFlag,
 }: {
