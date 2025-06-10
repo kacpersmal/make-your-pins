@@ -4,7 +4,6 @@ import {
   ChevronsUpDown,
   LogOut,
   Settings,
-  User,
   UserCircle2,
 } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
