@@ -1,8 +1,13 @@
 import UploadForm from '../uploadProcess/upload-form'
-export default function LoginModal({ className }: { className: string }) {
+import type { Dispatch, SetStateAction } from 'react'
+export default function UploadModal({
+  handler,
+}: {
+  handler: Dispatch<SetStateAction<boolean>>
+}) {
   return (
-    <div className={`fixed inset-0 z-50 backdrop-blur-sm ${className}`}>
-      <UploadForm></UploadForm>
+    <div className={`fixed inset-0 z-50 backdrop-blur-sm`}>
+      <UploadForm handler={handler} />
     </div>
   )
 }

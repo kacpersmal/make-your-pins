@@ -5,11 +5,18 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { X } from 'lucide-react'
+import type { Dispatch, SetStateAction } from 'react'
+type UploadFormProps = {
+  className?: string
+  onClose?: () => void
+}
 
 export function UploadForm({
-  className,
-  ...props
-}: React.ComponentProps<'div'>) {
+  handler,
+}: {
+  handler: Dispatch<SetStateAction<boolean>>
+}) {
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const [description, setDescription] = useState('')
@@ -68,15 +75,19 @@ export function UploadForm({
   }
 
   return (
-    <div
-      className={cn(
-        'flex h-full w-full items-center justify-center',
-        className,
-      )}
-      {...props}
-    >
-      <Card className="w-full max-w-3xl shadow-2xl">
-        <CardContent className="grid md:grid-col place-content-center gap-0 p-0">
+    <div className={cn('flex h-full w-full items-center justify-center')}>
+      <Card className="w-full max-w-3xl shadow-2xl relative">
+        <button
+          type="button"
+          onClick={() => {
+            handler(false)
+          }}
+          className="absolute right-4 top-4 z-10 text-muted-foreground hover:text-foreground"
+        >
+          <X className="h-6 w-6" />
+        </button>
+
+        <CardContent className="grid md:grid-cols-1 place-content-center gap-0 p-0">
           <form
             onSubmit={handleSubmit}
             className="p-6 md:p-8 flex flex-col gap-6"
