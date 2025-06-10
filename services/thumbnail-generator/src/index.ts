@@ -27,7 +27,15 @@ interface StorageObjectData {
  * @returns Thumbnail file name
  */
 function getThumbnailName(fileName: string): string {
-  return fileName.replace(/(\.[\w\d]+)$/, '-thumbnail$1');
+  // More robust regex that handles various file extensions
+  const withThumbnail = fileName.replace(/(\.[^.\\/]+)$/, '-thumbnail$1');
+
+  // Fallback if regex didn't work (no extension or regex failed)
+  if (withThumbnail === fileName) {
+    return `${fileName}-thumbnail`;
+  }
+
+  return withThumbnail;
 }
 
 /**
@@ -72,6 +80,7 @@ async function generateThumbnail(
       fit: sharp.fit.inside,
       withoutEnlargement: true,
     })
+    .webp({quality: 80}) // Use WebP format for better compression
     .toBuffer();
 }
 
@@ -146,6 +155,8 @@ functions.cloudEvent(
 
       console.log(`Thumbnail created successfully at ${thumbnailPath}`);
 
+      //await updateAssetWithThumbnail(fileName, thumbnailName, thumbnailPath);
+
       console.log('Processing completed successfully');
       return Promise.resolve();
     } catch (error) {
@@ -154,3 +165,50 @@ functions.cloudEvent(
     }
   }
 );
+async function updateAssetWithThumbnail(
+  fileName: string,
+  thumbnailName: string,
+  thumbnailPath: string
+) {
+  try {
+    console.log(`Looking for assets referencing file: ${fileName}`);
+
+    // Find asset document that references this file
+    const assetsRef = firestore.collection('assets');
+    const querySnapshot = await assetsRef
+      .where('files', 'array-contains', {fileName: fileName})
+      .limit(1)
+      .get();
+
+    if (querySnapshot.empty) {
+      console.log(`No asset document found referencing file: ${fileName}`);
+    } else {
+      const assetDoc = querySnapshot.docs[0];
+      const assetData = assetDoc.data();
+      console.log(`Found asset ${assetDoc.id} to update with thumbnail info`);
+
+      // Update the file with thumbnail information
+      const updatedFiles = assetData.files.map((file: any) => {
+        if (file.fileName === fileName) {
+          return {
+            ...file,
+            thumbnailName,
+            thumbnailPath,
+          };
+        }
+        return file;
+      });
+
+      // Update the document
+      await assetDoc.ref.update({
+        files: updatedFiles,
+        updatedAt: new Date().toISOString(),
+      });
+
+      console.log(`Updated asset ${assetDoc.id} with thumbnail information`);
+    }
+  } catch (error) {
+    // Don't fail the whole function if Firestore update fails
+    console.error('Error updating Firestore:', error);
+  }
+}

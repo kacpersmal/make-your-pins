@@ -1,8 +1,9 @@
-import LoginModal from '@/components/LoginProcess/login-modal'
 import { createFileRoute } from '@tanstack/react-router'
+import AuthContainer from '@/components/auth/auth-container'
 import { useAuth } from '@/lib/auth-context'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { SearchInput } from '@/components/ui/search-input'
+
 export const Route = createFileRoute('/app')({
   component: RouteComponent,
 })
@@ -49,7 +50,13 @@ function RouteComponent() {
         </div>
       </ScrollArea>
 
-      {currentUser ? '' : <LoginModal className="" />}
+      {currentUser ? (
+        ''
+      ) : (
+        <div className="h-screen">
+          <AuthContainer />{' '}
+        </div>
+      )}
     </div>
   )
 }

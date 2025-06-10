@@ -9,6 +9,7 @@ import * as admin from 'firebase-admin';
 import { SignedUrlsService } from 'src/files/services/signed-urls.service';
 import { AssetFile } from './asset-creation.dto';
 import { AssetCachingService } from './asset-caching.service';
+import { UsersService } from 'src/users/services/users.service';
 
 // Define an interface for the asset data structure
 interface AssetData {
@@ -35,6 +36,7 @@ export class AssetFetchingService {
     private readonly firestore: FirestoreService,
     private readonly signedUrlsService: SignedUrlsService,
     private readonly cachingService: AssetCachingService,
+    private readonly userService: UsersService,
   ) {}
 
   /**
@@ -67,7 +69,14 @@ export class AssetFetchingService {
         views: admin.firestore.FieldValue.increment(1),
       });
 
-      return this.mapAssetDocToResponseDto(assetId, assetData);
+      // Map asset data
+      const mappedAsset = this.mapAssetDocToResponseDto(assetId, assetData);
+
+      // Enhance with owner data and return the first item
+      const enhancedAssets = await this.enhanceAssetsWithOwnerData([
+        mappedAsset,
+      ]);
+      return enhancedAssets[0];
     });
   }
 
@@ -145,9 +154,14 @@ export class AssetFetchingService {
         const pages = Math.ceil(total / limit);
 
         // Map results to response DTOs
-        const items = paginatedResults.map((item) =>
-          this.mapAssetDocToResponseDto(item.id, item),
+        const mappedItems = await Promise.all(
+          paginatedResults.map((item) =>
+            this.mapAssetDocToResponseDto(item.id, item),
+          ),
         );
+
+        // Enhance with owner data
+        const items = await this.enhanceAssetsWithOwnerData(mappedItems);
 
         // Return paginated response
         return {
@@ -202,11 +216,61 @@ export class AssetFetchingService {
       files,
       tags: data.tags,
       ownerId: data.ownerId,
+      owner: {
+        id: data.ownerId,
+        displayName: '',
+      },
       timestamp: data.timestamp,
       updatedAt: data.updatedAt,
       upvotes: data.upvotes || 0,
       downvotes: data.downvotes || 0,
       views: data.views || 0,
     };
+  }
+
+  /**
+   * Enhance assets with owner information
+   * @param assets Assets to enhance with owner data
+   * @returns Assets with owner information
+   */
+  private async enhanceAssetsWithOwnerData(
+    assets: AssetResponseDto[],
+  ): Promise<AssetResponseDto[]> {
+    if (!assets.length) return assets;
+
+    try {
+      // Extract unique owner IDs
+      const ownerIds = [...new Set(assets.map((asset) => asset.ownerId))];
+
+      // Fetch user data in a single batch
+      const usersResult = await this.userService.getUsersDataBatch(ownerIds);
+
+      // Create a map of user data for quick lookup
+      const userMap = new Map();
+      usersResult.users.forEach((user) => {
+        userMap.set(user.uid, {
+          id: user.uid,
+          displayName: user.displayName || 'Unknown User',
+          email: user.email,
+          photoURL: user.photoURL,
+        });
+      });
+
+      // Enhance each asset with owner data
+      return assets.map((asset) => {
+        const userData = userMap.get(asset.ownerId);
+        if (userData) {
+          return {
+            ...asset,
+            owner: userData,
+          };
+        }
+        return asset;
+      });
+    } catch (error) {
+      this.logger.error(`Error fetching user data: ${error.message}`);
+      // Return assets without owner enhancement if there's an error
+      return assets;
+    }
   }
 }
