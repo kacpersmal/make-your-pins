@@ -1,12 +1,4 @@
-import {
-  BookOpen,
-  Calendar,
-  Home,
-  Inbox,
-  Search,
-  Settings,
-  SquareTerminal,
-} from 'lucide-react'
+import { BookOpen, Home, SquareTerminal } from 'lucide-react'
 import { NavUser } from './nav-user'
 import { NavMain } from './nav-main'
 import {
@@ -24,28 +16,8 @@ import {
 const items = [
   {
     title: 'Home',
-    url: '#',
+    url: '/',
     icon: Home,
-  },
-  {
-    title: 'Inbox',
-    url: '#',
-    icon: Inbox,
-  },
-  {
-    title: 'Calendar',
-    url: '#',
-    icon: Calendar,
-  },
-  {
-    title: 'Search',
-    url: '#',
-    icon: Search,
-  },
-  {
-    title: 'Settings',
-    url: '#',
-    icon: Settings,
   },
 ]
 const navMain = [
@@ -122,7 +94,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={{ name: '', email: '', avatar: 'null' }} />
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   )
