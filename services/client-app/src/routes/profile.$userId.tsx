@@ -49,14 +49,6 @@ function ProfileSkeleton() {
         <div className="ml-40 mt-2">
           <Skeleton className="h-8 w-48 mb-2" />
           <Skeleton className="h-4 w-32 mb-4" />
-          <Skeleton className="h-20 w-full max-w-lg mb-4" />
-
-          {/* Stats Skeleton */}
-          <div className="flex gap-2 mt-4">
-            <Skeleton className="h-16 w-24" />
-            <Skeleton className="h-16 w-24" />
-            <Skeleton className="h-16 w-24" />
-          </div>
         </div>
       </div>
     </div>
