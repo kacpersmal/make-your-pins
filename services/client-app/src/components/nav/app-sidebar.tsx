@@ -7,8 +7,8 @@ import {
   Settings,
   SquareTerminal,
 } from 'lucide-react'
-import { NavUser } from './nav/nav-user'
-import { NavMain } from './nav/nav-main'
+import { NavUser } from './nav-user'
+import { NavMain } from './nav-main'
 import {
   Sidebar,
   SidebarContent,

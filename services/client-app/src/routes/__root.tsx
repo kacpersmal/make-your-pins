@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-router'
 import type { QueryClient } from '@tanstack/react-query'
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
-import { AppSidebar } from '@/components/app-sidebar'
+import { AppSidebar } from '@/components/nav/app-sidebar'
 import '../globals.css'
 // import Header from '../components/Header'
 import { Toaster } from '@/components/ui/sonner'
