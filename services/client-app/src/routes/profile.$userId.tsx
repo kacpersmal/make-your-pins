@@ -1,27 +1,22 @@
 import { createFileRoute } from '@tanstack/react-router'
 import ProfileHeader from '@/components/profile/profile-header'
-import { useUser } from '@/hooks/use-users'
 import { Skeleton } from '@/components/ui/skeleton'
-import { usePageTitle } from '@/hooks/use-pageTitle'
+import { useProfileController } from '@/components/profile/profile-controller'
 
 export const Route = createFileRoute('/profile/$userId')({
-  component: RouteComponent,
+  component: ProfilePage,
 })
 
-function RouteComponent() {
+function ProfilePage() {
   const { userId } = Route.useParams()
-  const userQuery = useUser(userId)
+  const controller = useProfileController(userId)
+  const { isLoading, isError } = controller
 
-  usePageTitle(
-    userQuery.data?.displayName,
-    userQuery.isLoading,
-    userQuery.isError,
-  )
-  if (userQuery.isLoading) {
+  if (isLoading) {
     return <ProfileSkeleton />
   }
 
-  if (userQuery.isError) {
+  if (isError) {
     return (
       <div className="p-6 text-center">
         <h2 className="text-xl font-bold text-red-500">Error</h2>
@@ -32,7 +27,7 @@ function RouteComponent() {
 
   return (
     <>
-      <ProfileHeader userId={userId} userQuery={userQuery} />
+      <ProfileHeader userId={userId} controller={controller} />
     </>
   )
 }
@@ -54,6 +49,14 @@ function ProfileSkeleton() {
         <div className="ml-40 mt-2">
           <Skeleton className="h-8 w-48 mb-2" />
           <Skeleton className="h-4 w-32 mb-4" />
+          <Skeleton className="h-20 w-full max-w-lg mb-4" />
+
+          {/* Stats Skeleton */}
+          <div className="flex gap-2 mt-4">
+            <Skeleton className="h-16 w-24" />
+            <Skeleton className="h-16 w-24" />
+            <Skeleton className="h-16 w-24" />
+          </div>
         </div>
       </div>
     </div>

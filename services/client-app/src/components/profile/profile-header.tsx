@@ -6,62 +6,31 @@ import {
   Users,
   Videotape,
 } from 'lucide-react'
-import { toast } from 'sonner'
 import { ProfileEdit } from './profile-edit'
 import { StatBadge } from './stat-badge'
-import type { UseQueryResult } from '@tanstack/react-query'
-import type { UserProfileDto } from '@/types/user-types'
+import type { UseProfileControllerReturn } from '@/components/profile/profile-controller'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { useFollowUser, useUnfollowUser, useUser } from '@/hooks/use-users'
-import { useAuth } from '@/lib/auth-context'
 import { Button } from '@/components/ui/button'
 import { SocialLinks } from '@/components/profile/social-links'
 import { useIsMobile } from '@/hooks/use-mobile'
 
 type Props = {
   userId: string
-  userQuery: UseQueryResult<UserProfileDto, Error>
+  controller: UseProfileControllerReturn
 }
 
-const ProfileHeader = ({ userId, userQuery }: Props) => {
-  const auth = useAuth()
-  const currentUser = auth.currentUser
-  const isOwner = userId === currentUser?.uid
+const ProfileHeader = ({ userId, controller }: Props) => {
   const isMobile = useIsMobile()
 
-  // Using the userQuery passed from the parent route component
-  const user = userQuery.data
-  const followMutation = useFollowUser()
-  const unfollowMutation = useUnfollowUser()
-
-  const handleFollow = async () => {
-    try {
-      await followMutation.mutateAsync(userId)
-      toast('Success', {
-        description: `You are now following ${user?.displayName || 'this user'}.`,
-      })
-    } catch (error) {
-      toast('Error', {
-        description: 'Failed to follow this user. Please try again.',
-      })
-    }
-  }
-
-  const handleUnfollow = async () => {
-    try {
-      await unfollowMutation.mutateAsync(userId)
-      toast('Success', {
-        description: `You have unfollowed ${user?.displayName || 'this user'}.`,
-      })
-    } catch (error) {
-      toast('Error', {
-        description: 'Failed to unfollow this user. Please try again.',
-      })
-    }
-  }
-
-  const isFollowing = user?.isFollowing || false
-  const isLoading = followMutation.isPending || unfollowMutation.isPending
+  // Extract all needed values from the controller
+  const {
+    user,
+    isOwner,
+    isFollowing,
+    isActionLoading,
+    handleFollow,
+    handleUnfollow,
+  } = controller
 
   return (
     <div className="w-full flex flex-col">
@@ -134,10 +103,10 @@ const ProfileHeader = ({ userId, userQuery }: Props) => {
                     variant="outline"
                     size="sm"
                     onClick={handleUnfollow}
-                    disabled={isLoading}
+                    disabled={isActionLoading}
                     className={isMobile ? 'w-full' : ''}
                   >
-                    {isLoading ? (
+                    {isActionLoading ? (
                       <span className="animate-pulse">Processing...</span>
                     ) : (
                       <>
@@ -151,10 +120,10 @@ const ProfileHeader = ({ userId, userQuery }: Props) => {
                     variant="default"
                     size="sm"
                     onClick={handleFollow}
-                    disabled={isLoading}
+                    disabled={isActionLoading}
                     className={isMobile ? 'w-full' : ''}
                   >
-                    {isLoading ? (
+                    {isActionLoading ? (
                       <span className="animate-pulse">Processing...</span>
                     ) : (
                       <>
