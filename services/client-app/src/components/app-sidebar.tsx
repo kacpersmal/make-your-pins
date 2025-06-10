@@ -1,6 +1,5 @@
 import {
   BookOpen,
-  Bot,
   SquareTerminal,
   Calendar,
   Home,
@@ -104,7 +103,7 @@ const navMain = [
 export function AppSidebar() {
   return (
     <Sidebar collapsible="icon" className="">
-      <SidebarContent className="bg-transparent test">
+      <SidebarContent className="bg-transparent">
         <NavMain items={navMain} />
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
