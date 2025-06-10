@@ -1,3 +1,5 @@
+import { Input } from '../ui/input'
+import type { Path, UseFormReturn } from 'react-hook-form'
 import {
   FormControl,
   FormDescription,
@@ -6,8 +8,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Input } from '../ui/input'
-import type { UseFormReturn, Path } from 'react-hook-form'
 import { cn } from '@/lib/utils'
 
 // TSchema is a generic type parameter.
