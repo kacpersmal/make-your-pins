@@ -138,7 +138,7 @@ class ApiClient {
     if (error.response?.status === 401) {
       // If we get a 401 after trying to refresh the token, the user is truly not authenticated
       // Force logout in case of persistent auth errors
-      if (error.config.headers['X-Retry-Auth'] === 'true') {
+      if (error?.config?.headers['X-Retry-Auth'] === 'true') {
         console.error('Persistent auth error detected, logging out user')
         auth.signOut().catch((err) => {
           console.error('Error during forced sign out:', err)

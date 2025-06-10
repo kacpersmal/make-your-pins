@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useAuth } from '@/lib/auth-context'
-import { apiClient } from '@/lib/api-client'
 
 export function AuthStateHandler() {
   const { currentUser, loading, getIdToken } = useAuth()
