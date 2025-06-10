@@ -1,4 +1,4 @@
-import UploadModal from '@/components/uploadProcess/upload-modal'
+// import UploadModal from '@/components/uploadProcess/upload-modal'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/indexV2')({
