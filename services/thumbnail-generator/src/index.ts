@@ -80,6 +80,7 @@ async function generateThumbnail(
       fit: sharp.fit.inside,
       withoutEnlargement: true,
     })
+    .webp({quality: 80}) // Use WebP format for better compression
     .toBuffer();
 }
 
