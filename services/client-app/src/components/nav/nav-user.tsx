@@ -2,6 +2,7 @@
 import { ChevronsUpDown, LogOut, User } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import logo from '../../logo.svg'
+import type { AuthContextType } from '@/lib/auth-context'
 import { useAuth } from '@/lib/auth-context'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -21,8 +22,8 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 
-export function NavUser() {
-  const { currentUser, signOut } = useAuth()
+export function NavUser({ auth }: { auth: AuthContextType }) {
+  const { currentUser, signOut } = auth
   const { isMobile } = useSidebar()
 
   return (
