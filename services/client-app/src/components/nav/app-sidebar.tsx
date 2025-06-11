@@ -13,6 +13,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
 import { useAuth } from '@/lib/auth-context'
+import { CreateAssetButton } from '@/components/uploadProcess/create-asset-button'
 // Menu items.
 const items = [
   {
@@ -55,6 +56,9 @@ const navMain = [
       {
         title: 'Your Assets',
         url: '#',
+      },
+      {
+        component: CreateAssetButton,
       },
     ],
   },
