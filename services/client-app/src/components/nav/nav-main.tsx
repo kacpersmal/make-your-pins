@@ -17,20 +17,21 @@ import {
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar'
 
-export function NavMain({
-  items,
-}: {
-  items: Array<{
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
-    items?: Array<{
-      title: string
-      url: string
-    }>
-  }>
-}) {
+type SubItem = {
+  title?: string
+  url?: string
+  component?: React.ComponentType
+}
+
+type NavItem = {
+  title: string
+  url: string
+  icon?: LucideIcon
+  isActive?: boolean
+  items?: Array<SubItem>
+}
+
+export function NavMain({ items }: { items: Array<NavItem> }) {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -52,13 +53,17 @@ export function NavMain({
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <SidebarMenuSub className="">
-                  {item.items?.map((subItem) => (
-                    <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
-                          <span>{subItem.title}</span>
-                        </a>
-                      </SidebarMenuSubButton>
+                  {item.items?.map((subItem, idx) => (
+                    <SidebarMenuSubItem key={subItem.title || `item-${idx}`}>
+                      {subItem.component ? (
+                        <subItem.component />
+                      ) : (
+                        <SidebarMenuSubButton asChild>
+                          <a href={subItem.url}>
+                            <span>{subItem.title}</span>
+                          </a>
+                        </SidebarMenuSubButton>
+                      )}
                     </SidebarMenuSubItem>
                   ))}
                 </SidebarMenuSub>
