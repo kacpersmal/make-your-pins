@@ -1,53 +1,46 @@
-import { StrictMode } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
-
-import * as TanStackQueryProvider from './integrations/tanstack-query/root-provider.tsx'
-
-// Import the generated route tree
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { routeTree } from './routeTree.gen'
-
+import { AuthProvider } from '@/lib/auth-context'
+import { AuthStateHandler } from '@/components/auth/auth-state-handler'
+import './globals.css'
 import './styles.css'
-import reportWebVitals from './reportWebVitals.ts'
-import { AuthProvider } from '@/lib/auth-context.tsx'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
-// Create a new router instance
+const queryClient = new QueryClient()
+
 const router = createRouter({
   routeTree,
   context: {
-    ...TanStackQueryProvider.getContext(),
+    queryClient,
   },
   defaultPreload: 'intent',
-  scrollRestoration: true,
-  defaultStructuralSharing: true,
+  // This adds the query client to all route loaders
   defaultPreloadStaleTime: 0,
 })
 
-// Register the router instance for type safety
 declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router
   }
 }
 
-// Render the app
 const rootElement = document.getElementById('app')
-if (rootElement && !rootElement.innerHTML) {
+if (rootElement) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
-    <StrictMode>
-      <TanStackQueryProvider.Provider>
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
         <AuthProvider>
+          <AuthStateHandler />
           <RouterProvider router={router} />
         </AuthProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
-      </TanStackQueryProvider.Provider>
-    </StrictMode>,
+      </QueryClientProvider>
+    </React.StrictMode>,
+  )
+} else {
+  console.error(
+    'Root element not found. Make sure there is a <div id="root"></div> in your HTML file.',
   )
 }
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals()

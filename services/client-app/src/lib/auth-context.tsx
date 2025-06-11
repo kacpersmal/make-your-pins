@@ -11,7 +11,7 @@ import { auth } from './firebase-config'
 import type { User, UserCredential } from 'firebase/auth'
 import type { ReactNode } from 'react'
 
-interface AuthContextType {
+export interface AuthContextType {
   currentUser: User | null
   signUp: (email: string, password: string) => Promise<UserCredential>
   signIn: (email: string, password: string) => Promise<UserCredential>

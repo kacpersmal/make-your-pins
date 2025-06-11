@@ -153,6 +153,7 @@ export class AssetCachingService {
   }
 
   private getSearchCacheKey(params: AssetQueryDto): string {
+    // Include all pagination params in the cache key
     const normalizedParams = Object.entries(params)
       .filter(([_, value]) => value !== undefined)
       .map(([key, value]) => `${key}:${value}`)

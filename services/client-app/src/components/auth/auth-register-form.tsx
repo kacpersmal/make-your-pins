@@ -1,24 +1,24 @@
+import { useState } from 'react'
+import { Button } from '../ui/button'
 import AuthFormField from './auth-form-field'
 import AuthFormHeader from './auth-form-header'
-import { Form } from '@/components/ui/form'
-import { registerFromSchema } from './auth-form-v2'
+import type { registerFromSchema } from './auth-form'
 import type { UseFormReturn } from 'react-hook-form'
+import type { z } from 'zod'
 import type { Dispatch, SetStateAction } from 'react'
-import { z } from 'zod'
-import { Button } from '../ui/button'
-import { useState } from 'react'
+import { Form } from '@/components/ui/form'
 import { useAuth } from '@/lib/auth-context'
 
 export default function AuthRegisterForm({
-  hanldeRegisterFlag,
+  handleRegisterFlag,
 
   form,
 }: {
-  hanldeRegisterFlag: Dispatch<SetStateAction<boolean>>
+  handleRegisterFlag: Dispatch<SetStateAction<boolean>>
   form: UseFormReturn<z.infer<typeof registerFromSchema>>
 }) {
   const { signUp } = useAuth()
-  const [error, setError] = useState('')
+  const [_error, setError] = useState('')
   const handleRegisterSubmit = async (
     values: z.infer<typeof registerFromSchema>,
   ) => {
@@ -27,8 +27,6 @@ export default function AuthRegisterForm({
       await signUp(values.email, values.password)
     } catch (err) {
       setError('Failed to create an account.')
-      console.error(err)
-      console.error(error)
     }
   }
 
@@ -77,7 +75,7 @@ export default function AuthRegisterForm({
               variant="ghost"
               onClick={(e) => {
                 e.preventDefault()
-                hanldeRegisterFlag(false)
+                handleRegisterFlag(false)
               }}
             >
               Log in

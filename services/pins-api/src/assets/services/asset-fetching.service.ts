@@ -94,9 +94,11 @@ export class AssetFetchingService {
         `Searching assets with params: ${JSON.stringify(queryParams)} from database`,
       );
 
-      const { name, tag, ownerId, limit, page } = queryParams;
+      const { name, tag, ownerId } = queryParams;
+      const limit = parseInt(queryParams.limit as unknown as string, 10) || 10;
+      const page = parseInt(queryParams.page as unknown as string, 10) || 0;
 
-      // Start building the query - explicitly type as Query
+      // Start building the query
       let query: admin.firestore.Query<admin.firestore.DocumentData> =
         this.firestore.getFirestore().collection(this.collectionName);
 
@@ -105,59 +107,70 @@ export class AssetFetchingService {
         query = query.where('ownerId', '==', ownerId);
       }
 
+      // Apply tag filter if provided
+      // Note: This requires a compound index if combined with other filters
+      if (tag) {
+        // This assumes tags are stored in a format that allows array-contains queries
+        query = query.where('tags', 'array-contains', { value: tag });
+      }
+
+      // Order by timestamp (most recent first)
+      // If you want to sort by updatedAt, you'll need to ensure it exists on all docs
+      query = query.orderBy('timestamp', 'desc');
+
       try {
+        // First get total count using count() query
+        const countSnapshot = await query.count().get();
+        const total = countSnapshot.data().count;
+
+        // Apply pagination
+        const pageSize = limit;
+        const pageIndex = page;
+
+        // Apply limit and offset
+        if (pageIndex > 0) {
+          // Get the last document from the previous page
+          const lastDocSnapshot = await query
+            .limit(pageIndex * pageSize)
+            .get()
+            .then((snapshot) => snapshot.docs[snapshot.docs.length - 1]);
+
+          // Start after the last document
+          if (lastDocSnapshot) {
+            query = query.startAfter(lastDocSnapshot);
+          }
+        }
+
+        // Apply limit for this page
+        query = query.limit(pageSize);
+
         // Execute the query
         const snapshot = await query.get();
 
-        // Apply in-memory filtering for name and tag
-        // Use type assertion to specify the document structure
+        // Calculate total pages
+        const pages = Math.ceil(total / pageSize);
+
+        // Map results
         let results = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         })) as AssetData[];
 
-        // Filter by name (case insensitive)
+        // For name filtering (which Firestore doesn't handle natively)
+        // we still need some in-memory filtering
         if (name) {
           const lowerName = name.toLowerCase();
           results = results.filter((asset) =>
             asset.name.toLowerCase().includes(lowerName),
           );
+
+          // Note: this affects the accuracy of our pagination
+          // A more complete solution would use Algolia or Firebase Extensions for search
         }
-
-        // Filter by tag
-        if (tag) {
-          const lowerTag = tag.toLowerCase();
-          results = results.filter(
-            (asset) =>
-              asset.tags &&
-              asset.tags.some((t) => t.value.toLowerCase().includes(lowerTag)),
-          );
-        }
-
-        // Sort by timestamp (most recent first)
-        results.sort((a, b) => {
-          const dateA = a.updatedAt
-            ? new Date(a.updatedAt)
-            : new Date(a.timestamp);
-          const dateB = b.updatedAt
-            ? new Date(b.updatedAt)
-            : new Date(b.timestamp);
-          return dateB.getTime() - dateA.getTime();
-        });
-
-        // Get total count
-        const total = results.length;
-
-        // Calculate pagination
-        const offset = page * limit;
-        const paginatedResults = results.slice(offset, offset + limit);
-        const pages = Math.ceil(total / limit);
 
         // Map results to response DTOs
         const mappedItems = await Promise.all(
-          paginatedResults.map((item) =>
-            this.mapAssetDocToResponseDto(item.id, item),
-          ),
+          results.map((item) => this.mapAssetDocToResponseDto(item.id, item)),
         );
 
         // Enhance with owner data
@@ -167,8 +180,8 @@ export class AssetFetchingService {
         return {
           items,
           total,
-          page,
-          limit,
+          page: pageIndex,
+          limit: pageSize,
           pages,
         };
       } catch (error) {

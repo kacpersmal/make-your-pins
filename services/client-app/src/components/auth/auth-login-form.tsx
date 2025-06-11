@@ -1,12 +1,12 @@
+import { Button } from '../ui/button'
 import AuthFormField from './auth-form-field'
 import AuthFormFooter from './auth-form-footer'
 import AuthFormHeader from './auth-form-header'
-import { Form } from '@/components/ui/form'
-import { formSchema } from './auth-form-v2'
+import type { formSchema } from './auth-form'
+import type { z } from 'zod'
 import type { Dispatch, SetStateAction } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
-import { z } from 'zod'
-import { Button } from '../ui/button'
+import { Form } from '@/components/ui/form'
 
 export default function AuthLoginForm({
   hanldeRegisterFlag,
