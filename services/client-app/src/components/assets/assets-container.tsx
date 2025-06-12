@@ -13,13 +13,15 @@ export default function AssetsContainer() {
   })
   return (
     <>
-      <SearchInput />
-      <AssetsGrid page={page} />
-      <AssetsPageControll
-        page={page}
-        lastPage={data?.pages}
-        onPageChange={setPage}
-      />
+      <div className="h-full w-full">
+        <SearchInput />
+        <AssetsGrid page={page} />
+        <AssetsPageControll
+          page={page}
+          lastPage={data?.pages}
+          onPageChange={setPage}
+        />
+      </div>
     </>
   )
 }
