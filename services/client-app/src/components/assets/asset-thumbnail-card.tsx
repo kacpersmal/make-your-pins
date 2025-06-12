@@ -1,7 +1,10 @@
-export default function AssetsThumbnailCard() {
+export default function AssetsThumbnailCard({ assetId }: { assetId: string }) {
   return (
     <>
-      <div className="h-96 bg-black/10 rounded-2xl"></div>
+      <div className="h-full bg-black/10 rounded-2xl flex justify-center items-center">
+        {' '}
+        {assetId}
+      </div>
     </>
   )
 }
