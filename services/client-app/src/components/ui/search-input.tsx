@@ -1,5 +1,5 @@
 import { Search } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
@@ -16,9 +16,18 @@ export function SearchInput({
 }: SearchInputProps) {
   const [searchTerm, setSearchTerm] = useState(initialValue)
 
+  useEffect(() => {
+    setSearchTerm(initialValue)
+  }, [initialValue])
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     onSearch(searchTerm)
+  }
+
+  const handleClear = () => {
+    setSearchTerm('')
+    onSearch('')
   }
 
   return (

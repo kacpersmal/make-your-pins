@@ -3,7 +3,6 @@ import { useNavigate } from '@tanstack/react-router'
 import { Button } from '../ui/button'
 import type { AssetResponseDto } from '@/types/asset-types'
 
-// Add this helper function to handle tag clicks
 const useTagSearch = () => {
   const navigate = useNavigate()
 

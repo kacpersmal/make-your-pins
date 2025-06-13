@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
 import { useAuth } from '@/lib/auth-context'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
@@ -173,12 +174,7 @@ export function FileUploadStep({
       {isUploading && (
         <div className="mb-4">
           <p className="mb-2">Uploading: {uploadProgress}%</p>
-          <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-            <div
-              className="bg-blue-600 h-2.5 rounded-full"
-              style={{ width: `${uploadProgress}%` }}
-            ></div>
-          </div>
+          <Progress value={uploadProgress} className="h-2" />
         </div>
       )}
 
