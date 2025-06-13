@@ -1,11 +1,12 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
 import { assetFormSchema } from './upload-form-schema'
+import { TagSuggestions } from './tag-suggestions'
 import type { AssetFormValues } from './upload-form-schema'
 import type { AssetTag } from '@/types/asset-types'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { useCreateAsset } from '@/hooks/use-assets'
 import { AssetFileType } from '@/types/asset-types'
@@ -34,6 +35,8 @@ export function AssetDetailsStep({
   onError,
 }: AssetDetailsStepProps) {
   const createAsset = useCreateAsset()
+  const [currentTags, setCurrentTags] = useState<Array<string>>([])
+  const [tagSearchQuery, setTagSearchQuery] = useState<string>('')
 
   const form = useForm<AssetFormValues>({
     resolver: zodResolver(assetFormSchema),
@@ -43,6 +46,24 @@ export function AssetDetailsStep({
       tags: '',
     },
   })
+
+  const handleAddTag = (newTag: string) => {
+    const currentTagsValue = form.getValues('tags') || ''
+    const tagsArray = currentTagsValue
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0)
+
+    // Only add if not already present
+    if (!tagsArray.some((tag) => tag.toLowerCase() === newTag.toLowerCase())) {
+      const updatedTags = [...tagsArray, newTag].join(', ')
+      form.setValue('tags', updatedTags, { shouldValidate: true })
+      setCurrentTags([...tagsArray, newTag])
+
+      // Clear search query after adding a tag
+      setTagSearchQuery('')
+    }
+  }
 
   const onSubmit = async (data: AssetFormValues) => {
     try {
@@ -75,6 +96,29 @@ export function AssetDetailsStep({
       onError(err instanceof Error ? err.message : 'Failed to create asset')
       console.error('Create asset error:', err)
     }
+  }
+
+  // Handle tag input changes
+  const handleTagsChange = (value: string) => {
+    // Update form value first
+    const lastCommaIndex = value.lastIndexOf(',')
+
+    // Extract the search query (text after the last comma)
+    if (lastCommaIndex !== -1) {
+      const search = value.substring(lastCommaIndex + 1).trim()
+      setTagSearchQuery(search)
+    } else {
+      setTagSearchQuery(value.trim())
+    }
+
+    // Update current tags list
+    const tagsArray = value
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0)
+
+    setCurrentTags(tagsArray)
+    return value
   }
 
   return (
@@ -135,9 +179,20 @@ export function AssetDetailsStep({
             <FormItem>
               <FormLabel>Tags (comma-separated)</FormLabel>
               <FormControl>
-                <Input placeholder="nature, landscape, mountains" {...field} />
+                <Input
+                  placeholder="nature, landscape, mountains"
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(handleTagsChange(e.target.value))
+                  }}
+                />
               </FormControl>
               <FormMessage />
+              <TagSuggestions
+                currentTags={currentTags}
+                searchQuery={tagSearchQuery}
+                onAddTag={handleAddTag}
+              />
             </FormItem>
           )}
         />
