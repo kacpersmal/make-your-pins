@@ -10,7 +10,6 @@ export default function AssetsThumbnailCard({
 }) {
   return (
     <>
-      {console.log(asset)}
       <div className="h-full bg-black/10 rounded-md flex  flex-col  items-center  shadow-neutral-900 shadow-md/10 overflow-hidden">
         <div className="flex-1/7 w-full shrink-0">
           <ThumbnailTop asset={asset} />
