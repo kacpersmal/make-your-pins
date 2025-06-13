@@ -1,7 +1,7 @@
 import type { AssetResponseDto } from '@/types/asset-types'
 // import type { ReactNode } from 'react'
 // import AssetDetailsModal from './asset-details-modal'
-import { EllipsisVertical, Ghost, Heart, Share2 } from 'lucide-react'
+import { EllipsisVertical, Heart, Share2 } from 'lucide-react'
 import { Button } from '../ui/button'
 export default function AssetsThumbnailCard({
   asset,
