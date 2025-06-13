@@ -24,7 +24,9 @@ function RouteComponent() {
   if (isError) {
     return <div>Error loading assets: {error.message}</div>
   }
-
+  {
+    console.log('data.items', data?.items)
+  }
   return (
     <ErrorBoundary>
       <div className="container mx-auto p-4">
