@@ -5,6 +5,10 @@ import { useProfileController } from '@/components/profile/profile-controller'
 import { AuthGuard } from '@/components/auth/auth-guard'
 import { useMyAssets } from '@/hooks/use-assets'
 import { useState } from 'react'
+import AssetsThumbnailCard from '@/components/assets/asset-thumbnail-card'
+import { AnimatePresence, motion } from 'framer-motion'
+import LoadingCircleSpinner from '../components/ui/loading-circle'
+import AssetsPageControll from '@/components/assets/assets-page-controll'
 
 export const Route = createFileRoute('/profile/$userId')({
   component: ProtectedProfilePage,
@@ -34,10 +38,17 @@ function ProfilePage() {
     return (
       <>
         <ProfileSkeleton />
-        <div className="mt-8 md:mt-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-           {Array.from({length: 4}).map((_, index) => (
-            <Skeleton key={index} className='h-100'/>
-           ))}
+        <div className="h-[50vh]">
+        <AnimatePresence>
+          <motion.div
+            className="h-full w-full items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <LoadingCircleSpinner />
+          </motion.div>
+        </AnimatePresence>
         </div>
       </>
     )
@@ -56,57 +67,23 @@ function ProfilePage() {
   return (
     <>
       <ProfileHeader userId={userId} controller={controller} />
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {data?.items.map((asset) => (
-            <div key={asset.id} className="border rounded-md overflow-hidden">
-              {asset.files[0]?.thumbnailPath && (
-                <img
-                  src={
-                    import.meta.env.VITE_PUBLIC_BUCKET_URL +
-                    asset.files[0].thumbnailPath
-                  }
-                  alt={asset.name}
-                  className="w-full h-74 object-cover"
-                />
-              )}
-              <div className="p-4">
-                <h3 className="text-lg font-semibold">{asset.name}</h3>
-                <p className="text-gray-600 truncate">{asset.description}</p>
-                <div className="flex mt-2">
-                  {asset.tags?.map((tag) => (
-                    <span
-                      key={tag.value}
-                      className="px-2 py-1 text-xs bg-gray-200 rounded-md mr-2"
-                    >
-                      {tag.value}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-        {data && (
-          <div className="flex justify-between items-center mt-6">
-            <button
-              disabled={data.page === 0}
-              onClick={() => setPage((p) => Math.max(0, p - 1))}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50"
-            >
-              Previous
-            </button>
-            <span>
-              Page {page + 1} of {data.pages}
-            </span>
-            <button
-              disabled={page >= data.pages - 1}
-              onClick={() => setPage((p) => p + 1)}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
-        )}
+      <motion.div
+          key={page}
+          className="grid min-h-[90vh] gap-5 w-full grid-rows-2 grid-cols-5 p-4 overflow-hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          {data?.items.map((asset) => {
+            console.log(asset)
+            return <AssetsThumbnailCard asset={asset} key={asset.id} />
+          })}
+      </motion.div>
+      <AssetsPageControll
+            page={page}
+            lastPage={data?.pages}
+            onPageChange={setPage}
+      />
     </>
   )
 }
