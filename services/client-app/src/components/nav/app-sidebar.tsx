@@ -1,15 +1,4 @@
-import {
-  BookImage,
-  Grid,
-  Home,
-  Image,
-  LayoutGrid,
-  Newspaper,
-  Search,
-  Settings,
-  Upload,
-  Users,
-} from 'lucide-react'
+import { Grid, Image, LayoutGrid, Newspaper, Search } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { NavUser } from './nav-user'
 import {
@@ -93,7 +82,8 @@ export function AppSidebar() {
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="My Assets">
                     <Link
-                      to={`/profile/${userId}`}
+                      to="/profile/$userId"
+                      params={{ userId: userId ?? '' }}
                       className="flex items-center gap-2 w-full"
                     >
                       <Image className="h-4 w-4" />

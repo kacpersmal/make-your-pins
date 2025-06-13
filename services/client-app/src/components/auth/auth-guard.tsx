@@ -40,7 +40,7 @@ export function AuthGuard({
   // If we want a page to be accessible only for non-authenticated users (like login page)
   // and the user is authenticated, redirect them
   if (!requireAuth && currentUser) {
-    navigate({ to: '/' })
+    navigate({ to: '/', search: { tag: undefined } })
     return null
   }
 

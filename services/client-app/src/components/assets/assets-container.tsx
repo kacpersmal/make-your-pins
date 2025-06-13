@@ -32,7 +32,7 @@ export default function AssetsContainer() {
     // Update URL to reflect the search
     navigate({
       to: '/',
-      search: term ? { tag: term } : {},
+      search: { tag: term || undefined },
     })
   }
 

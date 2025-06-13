@@ -25,11 +25,6 @@ export function SearchInput({
     onSearch(searchTerm)
   }
 
-  const handleClear = () => {
-    setSearchTerm('')
-    onSearch('')
-  }
-
   return (
     <div className="fixed ml-5 top-6 w-96">
       <form onSubmit={handleSubmit} className="flex w-full items-center gap-2">

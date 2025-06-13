@@ -5,7 +5,7 @@ import AssetsContainer from '@/components/assets/assets-container'
 
 export const Route = createFileRoute('/')({
   component: HomeRoute,
-  validateSearch: (search) => {
+  validateSearch: (search: { tag?: string | undefined | {} }) => {
     return {
       tag: search.tag ? String(search.tag) : undefined,
     }

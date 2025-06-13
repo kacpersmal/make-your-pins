@@ -79,7 +79,7 @@ export function AssetDetailsStep({
       // Create the asset
       await createAsset.mutateAsync({
         name: data.name,
-        description: data.description,
+        description: data.description || '',
         files: [
           {
             fileName: uploadedFileName,
