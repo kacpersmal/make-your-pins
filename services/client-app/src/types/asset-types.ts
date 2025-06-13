@@ -1,5 +1,3 @@
-import { string } from 'zod'
-
 export enum AssetFileType {
   IMAGE = 'image',
 }
