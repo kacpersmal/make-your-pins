@@ -1,11 +1,16 @@
 import AssetsThumbnailCard from './asset-thumbnail-card'
 import { useAssets } from '@/hooks/use-assets'
 import LoadingCircleSpinner from '../ui/loading-circle'
-import { animate, AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 export default function AssetsGrid({ page }: { page: number }) {
   const { data, isLoading, isError, error } = useAssets({
     page,
-    limit: 18,
+    limit: 10,
+  })
+
+  useAssets({
+    page: page + 1,
+    limit: 10,
   })
 
   //   if (isLoading) {
@@ -39,14 +44,14 @@ export default function AssetsGrid({ page }: { page: number }) {
       ) : (
         <motion.div
           key={page}
-          className="grid h-full gap-5 w-full grid-rows-3 grid-cols-6 p-4 overflow-hidden"
+          className="grid h-full gap-5 w-full grid-rows-2 grid-cols-5 p-4 overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
           {data?.items.map((asset) => {
             console.log(asset)
-            return <AssetsThumbnailCard assetId={asset.id} key={asset.id} />
+            return <AssetsThumbnailCard asset={asset} key={asset.id} />
           })}
         </motion.div>
       )}

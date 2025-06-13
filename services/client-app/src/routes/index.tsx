@@ -22,7 +22,7 @@ function HomeRoute() {
 
 function AuthenticatedHome() {
   return (
-    <div className="min-h-[93vh] bg-black/3 rounded-2xl">
+    <div className="min-h-[92vh] bg-black/3 rounded-2xl">
       <div className="h-[89vh] w-full rounded-2xl relative">
         <AssetsContainer />
       </div>

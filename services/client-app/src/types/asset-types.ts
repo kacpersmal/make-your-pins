@@ -1,3 +1,5 @@
+import { string } from 'zod'
+
 export enum AssetFileType {
   IMAGE = 'image',
 }
@@ -15,6 +17,13 @@ export interface AssetFile {
   thumbnailPath?: string
 }
 
+export interface Owner {
+  displayName: string
+  email: string
+  id: string
+  photoURL: string
+}
+
 export interface AssetResponseDto {
   id: string
   name: string
@@ -22,6 +31,7 @@ export interface AssetResponseDto {
   files: Array<AssetFile>
   tags?: Array<AssetTag>
   ownerId: string
+  owner: Owner
   timestamp: string
   updatedAt?: string
   upvotes: number
