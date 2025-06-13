@@ -1,7 +1,8 @@
+import { AnimatePresence, motion } from 'framer-motion'
+import LoadingCircleSpinner from '../ui/loading-circle'
 import AssetsThumbnailCard from './asset-thumbnail-card'
 import { useAssets } from '@/hooks/use-assets'
-import LoadingCircleSpinner from '../ui/loading-circle'
-import { AnimatePresence, motion } from 'framer-motion'
+
 export default function AssetsGrid({ page }: { page: number }) {
   const { data, isLoading, isError, error } = useAssets({
     page,
@@ -41,7 +42,6 @@ export default function AssetsGrid({ page }: { page: number }) {
           exit={{ opacity: 0 }}
         >
           {data?.items.map((asset) => {
-            console.log(asset)
             return <AssetsThumbnailCard asset={asset} key={asset.id} />
           })}
         </motion.div>
