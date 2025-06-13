@@ -14,6 +14,18 @@ const useTagSearch = () => {
   }
 }
 
+// Add this hook for profile navigation
+const useProfileNavigation = () => {
+  const navigate = useNavigate()
+
+  return (userId: string) => {
+    navigate({
+      to: '/profile/$userId',
+      params: { userId },
+    })
+  }
+}
+
 export default function AssetsThumbnailCard({
   asset,
 }: {
@@ -37,13 +49,25 @@ export default function AssetsThumbnailCard({
 }
 
 function ThumbnailTop({ asset }: { asset: AssetResponseDto }) {
+  const navigateToProfile = useProfileNavigation()
+
   return (
     <div className="flex justify-between items-center rounded-t-md p-2">
       <div className="flex gap-2 items-center">
-        <img src={asset.owner.photoURL} alt="" className="w-8 rounded-[50%]" />
+        <div
+          onClick={() => navigateToProfile(asset.ownerId)}
+          className="cursor-pointer transition-transform hover:scale-105"
+        >
+          <img
+            src={asset.owner.photoURL}
+            alt={asset.owner.displayName || ''}
+            className="w-8 h-8 rounded-[50%] object-cover border border-gray-200"
+          />
+        </div>
         <div className="flex flex-col">
           <h3 className="text-sm font-semibold truncate">{asset.name}</h3>
-          <p className="text-gray-600 text-xs">
+
+          <p className="text-gray-500 text-xs">
             {asset.timestamp.slice(0, 10)}
           </p>
         </div>
