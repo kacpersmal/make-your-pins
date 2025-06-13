@@ -17,11 +17,11 @@ export default function AssetsGrid({
   })
 
   // Prefetch next page for smoother pagination
-  useAssets({
-    page: page + 1,
-    limit: 10,
-    tag: tagFilter,
-  })
+  // useAssets({
+  //   page: page + 1,
+  //   limit: 10,
+  //   tag: tagFilter,
+  // })
 
   if (isError) {
     return (
