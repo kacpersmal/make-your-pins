@@ -12,22 +12,13 @@ export default function AssetsGrid({ page }: { page: number }) {
     page: page + 1,
     limit: 10,
   })
-
-  //   if (isLoading) {
-  //     return (
-  //       <div className="  h-full w-full">
-  //         <LoadingCircleSpinner />
-  //       </div>
-  //     )
-  //   }
-
-  //   if (isError) {
-  //     return (
-  //       <div className=" h-full w-full">
-  //         Error loading assets: {error.message}
-  //       </div>
-  //     )
-  //   }
+  if (isError) {
+    return (
+      <div className=" h-full w-full">
+        Error loading assets: {error.message}
+      </div>
+    )
+  }
   return (
     <>
       {isLoading ? (
