@@ -7,6 +7,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { useAuth } from '@/lib/auth-context'
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 
 export function UploadForm({
   handler,
@@ -16,8 +19,13 @@ export function UploadForm({
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const [description, setDescription] = useState('')
-  const [message, setMessage] = useState('')
-  const dropRef = useRef<HTMLDivElement>(null)
+  const [message, setMessage] = useState<string | null>('')
+  const [isUploading, setIsUploading] = useState<boolean>(false)
+  const [uploadProgress, setUploadProgress] = useState<number>(0)
+  const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null)
+  const dropRef = useRef<HTMLInputElement>(null)
+
+  const { currentUser } = useAuth()
 
   const handleFile = (file: File) => {
     setFile(file)
@@ -63,8 +71,83 @@ export function UploadForm({
       return
     }
 
-    console.log('Uploading:', { file, description })
-    setMessage('File uploaded successfully (simulated).')
+    if (!currentUser) {
+      setMessage('You must be logged in to upload files')
+      return
+    }
+
+    try {
+      setIsUploading(true)
+      setUploadProgress(0)
+      setMessage(null)
+
+      const tokenResponse = await currentUser.getIdToken()
+
+      const uploadUrlResponse = await fetch(`${API_URL}/files/upload-url`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${tokenResponse}`,
+        },
+        body: JSON.stringify({
+          contentType: file.type,
+        }),
+      })
+
+      if (!uploadUrlResponse.ok) {
+        throw new Error('Failed to get upload URL')
+      }
+
+      const {
+        url: signedUrl,
+        publicUrl,
+      } = await uploadUrlResponse.json()
+
+      await new Promise<void>((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+
+        xhr.upload.addEventListener('progress', (event) => {
+          if (event.lengthComputable) {
+            const percentCompleted = Math.round(
+              (event.loaded * 100) / event.total,
+            )
+            setUploadProgress(percentCompleted)
+          }
+        })
+
+        xhr.addEventListener('load', () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve()
+          } else {
+            reject(new Error(`Upload failed with status ${xhr.status}`))
+          }
+        })
+
+        xhr.addEventListener('error', () => {
+          reject(new Error('Network error during upload'))
+        })
+
+        xhr.open('PUT', signedUrl)
+        xhr.setRequestHeader('Content-Type', file.type)
+
+        xhr.send(file)
+      })
+
+      setUploadedFileUrl(publicUrl)
+
+      if (dropRef.current) {
+        dropRef.current.value = ''
+      }
+      setFile(null)
+    } catch (err) {
+      setMessage(
+        err instanceof Error ? err.message : 'An unknown error occurred',
+      )
+    } finally {
+      setIsUploading(false)
+    }
+
+    setMessage('File uploaded successfully.')
     setFile(null)
     setPreview(null)
     setDescription('')
@@ -134,7 +217,23 @@ export function UploadForm({
               </div>
             )}
 
-            <Button type="submit" className="w-full">
+            {isUploading && (
+              <div className="mb-4">
+                <p className="mb-2">Uploading: {uploadProgress}%</p>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                  <div
+                    className="bg-blue-600 h-2.5 rounded-full"
+                    style={{ width: `${uploadProgress}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
+
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={!file || isUploading || !currentUser}
+            >
               Upload
             </Button>
 
@@ -142,6 +241,17 @@ export function UploadForm({
               <div className="text-sm text-center text-muted-foreground">
                 {message}
               </div>
+            )}
+            {uploadedFileUrl && (
+              <p className="text-center">
+                <a
+                  href={uploadedFileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View uploaded file
+                </a>
+              </p>
             )}
           </form>
 
