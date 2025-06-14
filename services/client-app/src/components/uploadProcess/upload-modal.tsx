@@ -1,5 +1,6 @@
-import UploadForm from '../uploadProcess/upload-form'
+import { UploadForm } from '../uploadProcess/upload-form'
 import type { Dispatch, SetStateAction } from 'react'
+
 export default function UploadModal({
   handler,
 }: {

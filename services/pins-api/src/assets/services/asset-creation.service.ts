@@ -10,12 +10,14 @@ import {
   AssetFile,
   CreateAssetDto,
   CreateAssetWithOwner,
+  AssetTag,
 } from 'src/assets/services/asset-creation.dto';
 import { UpdateAssetDto } from './asset-update.dto';
 import { FirestoreService } from 'src/shared/services/firestore.service';
 import { StorageService } from 'src/shared/services/storage.service';
 import { SignedUrlsService } from 'src/files/services/signed-urls.service';
 import { AssetCachingService } from './asset-caching.service';
+import * as admin from 'firebase-admin';
 
 @Injectable()
 export class AssetCreationService {
@@ -56,6 +58,10 @@ export class AssetCreationService {
         downvotes: 0,
         views: 0,
       });
+
+    if (tags && tags.length > 0) {
+      await this.updateTagsCollection(tags);
+    }
 
     // Invalidate search results cache since we've added a new asset
     try {
@@ -135,6 +141,8 @@ export class AssetCreationService {
       updatePayload.tags = updateData?.tags.map((tag) => ({
         value: tag.value,
       }));
+
+      await this.updateTagsCollection(updateData.tags);
     }
 
     if (updateData?.files && updateData?.files.length > 0) {
@@ -204,6 +212,46 @@ export class AssetCreationService {
       if (!fileExists[0]) {
         throw new Error(`File ${file.fileName} does not exist in the bucket`);
       }
+    }
+  }
+
+  private async updateTagsCollection(tags: AssetTag[]): Promise<void> {
+    try {
+      const firestore = this.firestore.getFirestore();
+      const tagsCollection = firestore.collection('tags');
+
+      for (const tag of tags) {
+        if (!tag.value) continue;
+
+        const tagValue = tag.value.toLowerCase().trim();
+        const tagDocRef = tagsCollection.doc(tagValue);
+
+        // Use a transaction to safely increment the count or add a new tag
+        await firestore.runTransaction(async (transaction) => {
+          const tagDoc = await transaction.get(tagDocRef);
+
+          if (tagDoc.exists) {
+            // Tag exists, increment count
+            transaction.update(tagDocRef, {
+              count: admin.firestore.FieldValue.increment(1),
+              updatedAt: new Date().toISOString(),
+            });
+          } else {
+            // New tag, create with count = 1
+            transaction.set(tagDocRef, {
+              value: tagValue,
+              count: 1,
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            });
+          }
+        });
+      }
+
+      this.logger.log(`Updated tags collection with ${tags.length} tags`);
+    } catch (error) {
+      this.logger.error(`Error updating tags collection: ${error.message}`);
+      // Don't throw the error to avoid disrupting the main asset creation flow
     }
   }
 
