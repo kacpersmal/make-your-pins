@@ -1,21 +1,25 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import LoadingCircleSpinner from '../ui/loading-circle'
 import AssetsThumbnailCard from './asset-thumbnail-card'
-import { useAssets } from '@/hooks/use-assets'
+import type { PaginatedAssetsResponseDto } from '@/types/asset-types'
+
+interface AssetsGridProps {
+  page: number
+  tagFilter?: string
+  data?: PaginatedAssetsResponseDto
+  isLoading: boolean
+  isError: boolean
+  error?: Error
+}
 
 export default function AssetsGrid({
   page,
   tagFilter,
-}: {
-  page: number
-  tagFilter?: string
-}) {
-  const { data, isLoading, isError, error } = useAssets({
-    page,
-    limit: 10,
-    tag: tagFilter,
-  })
-
+  data,
+  isLoading,
+  isError,
+  error,
+}: AssetsGridProps) {
   // Prefetch next page for smoother pagination
   // useAssets({
   //   page: page + 1,
@@ -25,7 +29,9 @@ export default function AssetsGrid({
 
   if (isError) {
     return (
-      <div className="h-full w-full">Error loading assets: {error.message}</div>
+      <div className="h-full w-full">
+        Error loading assets: {error?.message}
+      </div>
     )
   }
 
