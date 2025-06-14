@@ -1,9 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useState } from 'react'
 import ProfileHeader from '@/components/profile/profile-header'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useProfileController } from '@/components/profile/profile-controller'
 import { AuthGuard } from '@/components/auth/auth-guard'
+import { useState } from 'react'
+import AssetsThumbnailCard from '@/components/assets/asset-thumbnail-card'
+import { AnimatePresence, motion } from 'framer-motion'
+import LoadingCircleSpinner from '../components/ui/loading-circle'
+import AssetsPageControll from '@/components/assets/assets-page-controll'
 import { useAssets } from '@/hooks/use-assets'
 
 export const Route = createFileRoute('/profile/$userId')({
