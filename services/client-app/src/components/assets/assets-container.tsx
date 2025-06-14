@@ -19,9 +19,9 @@ export default function AssetsContainer() {
     }
   }, [search.tag])
 
-  const { data } = useAssets({
+  const { data, isLoading, isError, error } = useAssets({
     page,
-    limit: 18,
+    limit: 10,
     tag: tagSearch || undefined,
   })
 
@@ -44,7 +44,14 @@ export default function AssetsContainer() {
           placeholder="Search by tags..."
           initialValue={tagSearch}
         />
-        <AssetsGrid page={page} tagFilter={tagSearch} />
+        <AssetsGrid
+          page={page}
+          tagFilter={tagSearch}
+          data={data}
+          isLoading={isLoading}
+          isError={isError}
+          error={error ? error : undefined}
+        />
         <div className="">
           <AssetsPageControll
             page={page}
