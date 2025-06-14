@@ -25,7 +25,6 @@ function RouteComponent() {
     return <div>Error loading assets: {error.message}</div>
   }
   {
-    console.log('data.items', data?.items)
   }
   return (
     <ErrorBoundary>

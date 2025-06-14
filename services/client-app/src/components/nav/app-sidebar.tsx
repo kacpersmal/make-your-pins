@@ -1,12 +1,11 @@
-import { BookOpen, Home, SquareTerminal } from 'lucide-react'
+import { Grid, Image, LayoutGrid, Newspaper, Search } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
 import { NavUser } from './nav-user'
-import { NavMain } from './nav-main'
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
@@ -14,94 +13,102 @@ import {
 } from '@/components/ui/sidebar'
 import { useAuth } from '@/lib/auth-context'
 import { CreateAssetButton } from '@/components/uploadProcess/create-asset-button'
-// Menu items.
-const items = [
+
+// Main navigation items
+const mainNavItems = [
   {
-    title: 'Home',
+    title: 'Search',
     url: '/',
-    icon: Home,
+    icon: Search,
   },
-]
-const navMain = [
+  {
+    title: 'Explore',
+    url: '/explore',
+    icon: Grid,
+  },
   {
     title: 'Feed',
-    url: '/app',
-    icon: SquareTerminal,
-    isActive: false,
-    items: [
-      {
-        title: 'New',
-        url: '/app',
-      },
-      {
-        title: 'Popular',
-        url: '/app',
-      },
-      {
-        title: 'Trending',
-        url: '/app',
-      },
-    ],
+    url: '/feed',
+    icon: Newspaper,
   },
+]
 
+// Asset management section
+const assetNavItems = [
   {
-    title: 'Assets',
-    url: '#',
-    icon: BookOpen,
-    items: [
-      {
-        title: 'Upload',
-        url: '/demo/upload',
-      },
-      {
-        title: 'Your Assets',
-        url: '#',
-      },
-      {
-        component: CreateAssetButton,
-      },
-    ],
-  },
-  {
-    title: 'Followed',
-    url: '#',
-    icon: BookOpen,
-    items: [
-      {
-        title: 'Store',
-        url: '/demo/store',
-      },
-    ],
+    title: 'Saved Assets',
+    url: '/saved-assets',
+    icon: LayoutGrid,
   },
 ]
 
 export function AppSidebar() {
   const auth = useAuth()
+  const userId = auth.currentUser?.uid
 
   return (
     <>
       {auth.currentUser && (
         <Sidebar collapsible="icon" className="">
           <SidebarContent className="bg-transparent">
-            <NavMain items={navMain} />
+            {/* Main Navigation */}
             <SidebarGroup>
-              <SidebarGroupLabel>Application</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {items.map((item) => (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton asChild>
-                        <a href={item.url}>
-                          <item.icon />
-                          <span>{item.title}</span>
-                        </a>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
+              <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+              <SidebarMenu>
+                {mainNavItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild tooltip={item.title}>
+                      <Link
+                        to={item.url}
+                        className="flex items-center gap-2 w-full"
+                      >
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroup>
+
+            {/* Assets Section */}
+            <SidebarGroup>
+              <SidebarGroupLabel>Assets</SidebarGroupLabel>
+              <SidebarMenu>
+                {/* Create Asset Button */}
+                <SidebarMenuItem>
+                  <CreateAssetButton />
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild tooltip="My Assets">
+                    <Link
+                      to="/profile/$userId"
+                      params={{ userId: userId ?? '' }}
+                      className="flex items-center gap-2 w-full"
+                    >
+                      <Image className="h-4 w-4" />
+                      <span>My Assets</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                {/* Asset Navigation Items */}
+                {assetNavItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild tooltip={item.title}>
+                      <Link
+                        to={item.url}
+                        className="flex items-center gap-2 w-full"
+                      >
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
             </SidebarGroup>
           </SidebarContent>
+
           <SidebarFooter>
             <NavUser auth={auth} />
           </SidebarFooter>

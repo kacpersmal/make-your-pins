@@ -1,30 +1,46 @@
-import AssetsThumbnailCard from './asset-thumbnail-card'
-import { useAssets } from '@/hooks/use-assets'
-import LoadingCircleSpinner from '../ui/loading-circle'
 import { AnimatePresence, motion } from 'framer-motion'
-export default function AssetsGrid({ page }: { page: number }) {
-  const { data, isLoading, isError, error } = useAssets({
-    page,
-    limit: 10,
-  })
+import LoadingCircleSpinner from '../ui/loading-circle'
+import AssetsThumbnailCard from './asset-thumbnail-card'
+import type { PaginatedAssetsResponseDto } from '@/types/asset-types'
 
-  useAssets({
-    page: page + 1,
-    limit: 10,
-  })
+interface AssetsGridProps {
+  page: number
+  tagFilter?: string
+  data?: PaginatedAssetsResponseDto
+  isLoading: boolean
+  isError: boolean
+  error?: Error
+}
+
+export default function AssetsGrid({
+  page,
+  tagFilter,
+  data,
+  isLoading,
+  isError,
+  error,
+}: AssetsGridProps) {
+  // Prefetch next page for smoother pagination
+  // useAssets({
+  //   page: page + 1,
+  //   limit: 10,
+  //   tag: tagFilter,
+  // })
+
   if (isError) {
     return (
-      <div className=" h-full w-full">
-        Error loading assets: {error.message}
+      <div className="h-full w-full">
+        Error loading assets: {error?.message}
       </div>
     )
   }
+
   return (
     <>
       {isLoading ? (
         <AnimatePresence>
           <motion.div
-            className="  h-full w-full items-center justify-center"
+            className="h-full w-full items-center justify-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -34,16 +50,21 @@ export default function AssetsGrid({ page }: { page: number }) {
         </AnimatePresence>
       ) : (
         <motion.div
-          key={page}
+          key={`${page}-${tagFilter}`}
           className="grid h-full gap-5 w-full grid-rows-2 grid-cols-5 p-4 overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          {data?.items.map((asset) => {
-            console.log(asset)
-            return <AssetsThumbnailCard asset={asset} key={asset.id} />
-          })}
+          {data?.items.length === 0 ? (
+            <div className="col-span-5 text-center mt-12">
+              No assets found{tagFilter ? ` with tag "${tagFilter}"` : ''}
+            </div>
+          ) : (
+            data?.items.map((asset) => {
+              return <AssetsThumbnailCard asset={asset} key={asset.id} />
+            })
+          )}
         </motion.div>
       )}
     </>

@@ -2,8 +2,14 @@ import { createFileRoute } from '@tanstack/react-router'
 import AuthContainer from '@/components/auth/auth-container'
 import { useAuth } from '@/lib/auth-context'
 import AssetsContainer from '@/components/assets/assets-container'
+
 export const Route = createFileRoute('/')({
   component: HomeRoute,
+  validateSearch: (search: { tag?: string | undefined | {} }) => {
+    return {
+      tag: search.tag ? String(search.tag) : undefined,
+    }
+  },
 })
 
 function HomeRoute() {
