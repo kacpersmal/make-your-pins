@@ -49,6 +49,8 @@ export class TagManagementService {
     if (!prefix) return [];
 
     try {
+      const plimit = parseInt(limit as any, 10);
+
       const prefixLower = prefix.toLowerCase();
       const endPrefix = prefixLower + '\uf8ff'; // High Unicode value to get all results with the prefix
 
@@ -58,7 +60,7 @@ export class TagManagementService {
         .orderBy('value')
         .startAt(prefixLower)
         .endAt(endPrefix)
-        .limit(limit)
+        .limit(plimit)
         .get();
 
       return snapshot.docs.map((doc) => doc.data() as TagData);
@@ -78,6 +80,7 @@ export class TagManagementService {
     if (!existingTags.length) {
       return this.getPopularTags(limit);
     }
+    const plimit = parseInt(limit as any, 10);
 
     try {
       // For simplicity, just return popular tags that are not in the existing tags
@@ -90,7 +93,7 @@ export class TagManagementService {
 
       return popularTags
         .filter((tag) => !existingTagsSet.has(tag.value))
-        .slice(0, limit);
+        .slice(0, plimit);
     } catch (error) {
       this.logger.error(`Error getting tag suggestions: ${error.message}`);
       return [];
