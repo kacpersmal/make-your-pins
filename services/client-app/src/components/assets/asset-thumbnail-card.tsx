@@ -2,6 +2,8 @@ import { EllipsisVertical, Heart, Share2 } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { Button } from '../ui/button'
 import type { AssetResponseDto } from '@/types/asset-types'
+import AssetDetailsModal from './asset-details-modal'
+import { useState } from 'react'
 
 const useTagSearch = () => {
   const navigate = useNavigate()
@@ -31,18 +33,27 @@ export default function AssetsThumbnailCard({
 }: {
   asset: AssetResponseDto
 }) {
+  const [detailFlag, setDetalFlag] = useState(false)
   return (
     <>
       <div className="h-full bg-black/10 rounded-md flex flex-col items-center shadow-neutral-900 shadow-md/10 overflow-hidden">
         <div className="flex-1/7 w-full shrink-0">
           <ThumbnailTop asset={asset} />
         </div>
-        <div className="flex-4/7 w-full overflow-hidden">
+        <div
+          className="flex-4/7 w-full overflow-hidden"
+          onClick={() => {
+            setDetalFlag(true)
+          }}
+        >
           {asset.files[0]?.thumbnailPath && <ThumbnailImage asset={asset} />}
         </div>
         <div className="flex-2/7 w-full">
           <ThumbnailBottom asset={asset} />
         </div>
+        {detailFlag && (
+          <AssetDetailsModal asset={asset} handler={setDetalFlag} />
+        )}
       </div>
     </>
   )
