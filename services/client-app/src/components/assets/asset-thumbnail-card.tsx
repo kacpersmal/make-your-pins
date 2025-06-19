@@ -33,7 +33,7 @@ export default function AssetsThumbnailCard({
 }: {
   asset: AssetResponseDto
 }) {
-  const [detailFlag, setDetalFlag] = useState(false)
+  const [detailFlag, setDetailFlag] = useState(false)
   return (
     <>
       <div className="h-full bg-black/10 rounded-md flex flex-col items-center shadow-neutral-900 shadow-md/10 overflow-hidden">
@@ -43,7 +43,7 @@ export default function AssetsThumbnailCard({
         <div
           className="flex-4/7 w-full overflow-hidden"
           onClick={() => {
-            setDetalFlag(true)
+            setDetailFlag(true)
           }}
         >
           {asset.files[0]?.thumbnailPath && <ThumbnailImage asset={asset} />}
@@ -60,7 +60,7 @@ export default function AssetsThumbnailCard({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <AssetDetailsModal asset={asset} handler={setDetalFlag} />
+              <AssetDetailsModal asset={asset} handler={setDetailFlag} />
             </motion.div>
           </AnimatePresence>
         )}
