@@ -115,11 +115,11 @@ function ThumbnailImage({ asset }: { asset: AssetResponseDto }) {
         className="h-full object-cover"
       />
       {/* TAGS OVERLAY - Now clickable */}
-      <div className="absolute left-2 bottom-1 flex flex-wrap gap-y-1">
+      <div className="absolute bottom-1 flex justify-center flex-wrap gap-y-1">
         {asset.tags?.map((tag) => (
           <span
             key={tag.value}
-            className="text-xs bg-gray-200/50 backdrop-blur-sxs rounded-md p-1 mr-1 cursor-pointer hover:bg-gray-300/50"
+            className="text-xs bg-gray-200/80 backdrop-blur-sxs rounded-md p-1 mr-1 cursor-pointer hover:bg-gray-300/50"
             onClick={(e) => {
               e.stopPropagation()
               handleTagClick(tag.value)
