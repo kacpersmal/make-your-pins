@@ -4,7 +4,7 @@ import { Button } from '../ui/button'
 import type { AssetResponseDto } from '@/types/asset-types'
 import AssetDetailsModal from './asset-details-modal'
 import { useState } from 'react'
-
+import { motion, AnimatePresence, delay } from 'framer-motion'
 const useTagSearch = () => {
   const navigate = useNavigate()
 
@@ -51,8 +51,18 @@ export default function AssetsThumbnailCard({
         <div className="flex-2/7 w-full">
           <ThumbnailBottom asset={asset} />
         </div>
+
         {detailFlag && (
-          <AssetDetailsModal asset={asset} handler={setDetalFlag} />
+          <AnimatePresence>
+            <motion.div
+              className="z-40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <AssetDetailsModal asset={asset} handler={setDetalFlag} />
+            </motion.div>
+          </AnimatePresence>
         )}
       </div>
     </>
