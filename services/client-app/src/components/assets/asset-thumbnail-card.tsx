@@ -51,9 +51,8 @@ export default function AssetsThumbnailCard({
         <div className="flex-2/7 w-full">
           <ThumbnailBottom asset={asset} />
         </div>
-
-        {detailFlag && (
-          <AnimatePresence>
+        <AnimatePresence>
+          {detailFlag && (
             <motion.div
               className="z-40"
               initial={{ opacity: 0 }}
@@ -62,8 +61,8 @@ export default function AssetsThumbnailCard({
             >
               <AssetDetailsModal asset={asset} handler={setDetailFlag} />
             </motion.div>
-          </AnimatePresence>
-        )}
+          )}
+        </AnimatePresence>
       </div>
     </>
   )
