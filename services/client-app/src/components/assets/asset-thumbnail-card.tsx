@@ -4,7 +4,7 @@ import { Button } from '../ui/button'
 import type { AssetResponseDto } from '@/types/asset-types'
 import AssetDetailsModal from './asset-details-modal'
 import { useState } from 'react'
-import { motion, AnimatePresence, delay } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 const useTagSearch = () => {
   const navigate = useNavigate()
 
