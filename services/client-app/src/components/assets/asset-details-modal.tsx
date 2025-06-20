@@ -14,7 +14,7 @@ export default function AssetDetailsModal({
     <div
       className={`fixed inset-0 z-50 w-full h-full flex justify-center items-center`}
     >
-      <div className="h-[70%] w-[60%] flex justify-between items-center rounded-2xl shadow-md   bg-[#C4C5DA] [background:radial-gradient(125%_125%_at_50%_10%,#fff_30%,#616E9A_100%)] p-4 relative">
+      <div className="h-[70%] w-[60%] flex justify-between items-center rounded-2xl shadow-md   bg-[#C4C5DA] [background:radial-gradient(125%_125%_at_50%_10%,#fff_10%,#616E9A_110%)] p-4 relative">
         <div className="absolute top-2 right-2">
           <Button
             variant={'ghost'}
