@@ -2,7 +2,9 @@ import { EllipsisVertical, Heart, Share2 } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { Button } from '../ui/button'
 import type { AssetResponseDto } from '@/types/asset-types'
-
+import AssetDetailsModal from './asset-details-modal'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 const useTagSearch = () => {
   const navigate = useNavigate()
 
@@ -31,18 +33,36 @@ export default function AssetsThumbnailCard({
 }: {
   asset: AssetResponseDto
 }) {
+  const [detailFlag, setDetailFlag] = useState(false)
   return (
     <>
       <div className="h-full bg-black/10 rounded-md flex flex-col items-center shadow-neutral-900 shadow-md/10 overflow-hidden">
         <div className="flex-1/7 w-full shrink-0">
           <ThumbnailTop asset={asset} />
         </div>
-        <div className="flex-4/7 w-full overflow-hidden">
+        <div
+          className="flex-4/7 w-full overflow-hidden"
+          onClick={() => {
+            setDetailFlag(true)
+          }}
+        >
           {asset.files[0]?.thumbnailPath && <ThumbnailImage asset={asset} />}
         </div>
         <div className="flex-2/7 w-full">
           <ThumbnailBottom asset={asset} />
         </div>
+        <AnimatePresence>
+          {detailFlag && (
+            <motion.div
+              className="z-40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <AssetDetailsModal asset={asset} handler={setDetailFlag} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </>
   )
@@ -94,11 +114,11 @@ function ThumbnailImage({ asset }: { asset: AssetResponseDto }) {
         className="h-full object-cover"
       />
       {/* TAGS OVERLAY - Now clickable */}
-      <div className="absolute left-2 bottom-1 flex flex-wrap gap-y-1">
+      <div className="absolute bottom-1 flex justify-center flex-wrap gap-y-1">
         {asset.tags?.map((tag) => (
           <span
             key={tag.value}
-            className="text-xs bg-gray-200/50 backdrop-blur-sxs rounded-md p-1 mr-1 cursor-pointer hover:bg-gray-300/50"
+            className="text-xs bg-gray-200/80 backdrop-blur-sxs rounded-md p-1 mr-1 cursor-pointer hover:bg-gray-300/50"
             onClick={(e) => {
               e.stopPropagation()
               handleTagClick(tag.value)
